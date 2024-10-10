@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 ChatUsersWidget(
+                  globalContext: context,
                   scafoldKey: _scafoldKey,
                 ),
                 MouseRegion(
@@ -110,13 +111,45 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+void _showContextMenu(BuildContext context, Offset position) async {
+  final RenderBox overLay =
+      Overlay.of(context).context.findRenderObject() as RenderBox;
+
+  await showMenu(
+    context: context,
+    position: RelativeRect.fromLTRB(position.dx + 200, position.dy,
+        overLay.size.width - position.dx, overLay.size.height - position.dy),
+    items: [
+      const PopupMenuItem(
+        mouseCursor: SystemMouseCursors.allScroll,
+        textStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),
+        value: 'delete',
+        child: Text("Delete"),
+      ),
+      const PopupMenuItem(
+        value: 'pin',
+        child: Text("Pin"),
+      ),
+    ],
+  ).then((value) {
+    if (value == 'delete') {
+      print('DELETED');
+    } else {
+      print('PINNED');
+    }
+  });
+}
+
 class ChatUsersWidget extends StatelessWidget {
   const ChatUsersWidget({
     super.key,
     required this.scafoldKey,
+    required this.globalContext,
   });
 
   final GlobalKey<ScaffoldState> scafoldKey;
+
+  final BuildContext globalContext;
 
   @override
   Widget build(BuildContext context) {
@@ -128,23 +161,33 @@ class ChatUsersWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 100),
             itemCount: 15,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                leading: CircleAvatar(
-                  radius: 25,
-                  child: Icon(Icons.person),
-                ),
-                title: Text(
-                  'John Wick',
-                ),
-                subtitle: Text(
-                  "What'st up?",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: Text(
-                  "${DateTime.now().day}/${DateTime.now().month}",
-                ),
-              );
+              return Builder(builder: (context) {
+                return GestureDetector(
+                  onDoubleTap: () {
+                    RenderBox itemBox = context.findRenderObject() as RenderBox;
+                    Offset position = itemBox.localToGlobal(Offset.zero);
+                    _showContextMenu(context, position);
+                  },
+                  onSecondaryTapDown: (details) {},
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 25,
+                      child: Icon(Icons.person),
+                    ),
+                    title: Text(
+                      'John Wick',
+                    ),
+                    subtitle: Text(
+                      "What'st up?",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Text(
+                      "${DateTime.now().day}/${DateTime.now().month}",
+                    ),
+                  ),
+                );
+              });
             },
           ),
         ),
