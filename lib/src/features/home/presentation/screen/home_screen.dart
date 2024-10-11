@@ -1,5 +1,7 @@
-import 'package:chat_web/src/constants/colors/app_colors.dart';
+import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/extension/size_extenstion.dart';
+import 'package:chat_web/src/features/home/presentation/widget/right_side_bar_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,11 +14,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool isToMakeSmall = false;
   double _width = 400;
-  bool _isResizable = false;
+  bool isResizable = false;
+  final TextEditingController _chattingController = TextEditingController();
 
-  Offset _lastCursorPosition = Offset(0, 0);
+  Offset _lastCursorPosition = const Offset(0, 0);
 
-  GlobalKey<ScaffoldState> _scafoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    _chattingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scafoldKey,
       drawer: Drawer(
         child: Container(
+          width: 300,
+          color: Colors.blue,
           child: IconButton(
               onPressed: () {
                 _scafoldKey.currentState!.closeDrawer();
               },
-              icon: Icon(Icons.one_x_mobiledata)),
-          width: 300,
-          color: Colors.blue,
+              icon: const Icon(CupertinoIcons.xmark)),
         ),
       ),
       body: Row(
@@ -51,38 +60,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     isToMakeSmall = true;
                     _lastCursorPosition = event.position;
                     setState(() {});
-                    print('kirdi');
                   },
                   onExit: (event) {
                     isToMakeSmall = false;
                     setState(() {});
-                    print('chiqdi');
                   },
                   child: GestureDetector(
                     onPanStart: (details) {
-                      _isResizable = true;
+                      isResizable = true;
                       setState(() {});
                     },
                     onPanUpdate: (details) {
-                      print('CURRENT OFFSET ${details.globalPosition}');
                       if (details.globalPosition.dx < 260) {
                         return;
                       }
-                      _width +=
-                          details.globalPosition.dx - _lastCursorPosition.dx;
+                      _width += details.globalPosition.dx - _lastCursorPosition.dx;
                       _lastCursorPosition = details.globalPosition;
                       setState(() {});
                     },
                     onPanEnd: (details) {
-                      _isResizable = false;
+                      isResizable = false;
                       setState(() {});
                     },
                     child: AnimatedContainer(
                       curve: Curves.linear,
                       duration: const Duration(milliseconds: 400),
-                      color: isToMakeSmall
-                          ? AppColors.instance.grey
-                          : Colors.transparent,
+                      color: isToMakeSmall ? AppColors.instance.grey : Colors.transparent,
                       height: double.infinity,
                       width: isToMakeSmall ? context.w * 0.005 : 1,
                     ),
@@ -92,17 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.instance.blue,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      bottomLeft: Radius.circular(16)),
-                  image: DecorationImage(
-                    fit: BoxFit.fitWidth,
-                    image: NetworkImage(
-                        'https://images.unsplash.com/photo-1720048170996-40507a45c720?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8'),
-                  )),
+            child: RightSideBar(
+              controller: _chattingController,
             ),
           )
         ],
@@ -112,13 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 void _showContextMenu(BuildContext context, Offset position) async {
-  final RenderBox overLay =
-      Overlay.of(context).context.findRenderObject() as RenderBox;
+  final RenderBox overLay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
   await showMenu(
     context: context,
-    position: RelativeRect.fromLTRB(position.dx + 200, position.dy,
-        overLay.size.width - position.dx, overLay.size.height - position.dy),
+    position: RelativeRect.fromLTRB(position.dx + 200, position.dy, overLay.size.width - position.dx, overLay.size.height - position.dy),
     items: [
       const PopupMenuItem(
         mouseCursor: SystemMouseCursors.allScroll,
@@ -133,10 +125,7 @@ void _showContextMenu(BuildContext context, Offset position) async {
     ],
   ).then((value) {
     if (value == 'delete') {
-      print('DELETED');
-    } else {
-      print('PINNED');
-    }
+    } else {}
   });
 }
 
@@ -158,7 +147,7 @@ class ChatUsersWidget extends StatelessWidget {
       children: [
         Scrollbar(
           child: ListView.builder(
-            padding: EdgeInsets.only(top: 100),
+            padding: const EdgeInsets.only(top: 100),
             itemCount: 15,
             itemBuilder: (BuildContext context, int index) {
               return Builder(builder: (context) {
@@ -170,14 +159,14 @@ class ChatUsersWidget extends StatelessWidget {
                   },
                   onSecondaryTapDown: (details) {},
                   child: ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       radius: 25,
                       child: Icon(Icons.person),
                     ),
-                    title: Text(
+                    title: const Text(
                       'John Wick',
                     ),
-                    subtitle: Text(
+                    subtitle: const Text(
                       "What'st up?",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -195,19 +184,20 @@ class ChatUsersWidget extends StatelessWidget {
             child: Container(
           color: AppColors.instance.blue,
           child: ListTile(
-              title: Text('Chats'),
-              leading: IconButton(
-                  onPressed: () {
-                    scafoldKey.currentState!.openDrawer();
-                  },
-                  icon: Icon(Icons.menu))),
+            title: const Text('Chats'),
+            leading: IconButton(
+              onPressed: () {
+                scafoldKey.currentState!.openDrawer();
+              },
+              icon: const Icon(Icons.menu),
+            ),
+          ),
         ))
       ],
     ));
   }
 }
 
-// ignore: must_be_immutable
 class UserCardWidget extends StatelessWidget {
   UserCardWidget({super.key});
 
@@ -220,20 +210,19 @@ class UserCardWidget extends StatelessWidget {
       onEnter: (event) => _isPicked.value = true,
       onExit: (event) => _isPicked.value = false,
       child: ValueListenableBuilder(
-          valueListenable: _isPicked,
-          builder: (context, _, __) {
-            return AnimatedContainer(
-              height: _isPicked.value ? 60 : 80,
-              duration: const Duration(milliseconds: 500),
-              color: _isPicked.value
-                  ? AppColors.instance.blue
-                  : AppColors.instance.white,
-              child: const ListTile(
-                title: Text('Username'),
-                subtitle: Text('desctiption'),
-              ),
-            );
-          }),
+        valueListenable: _isPicked,
+        builder: (context, _, __) {
+          return AnimatedContainer(
+            height: _isPicked.value ? 60 : 80,
+            duration: const Duration(milliseconds: 500),
+            color: _isPicked.value ? AppColors.instance.blue : AppColors.instance.white,
+            child: const ListTile(
+              title: Text('Username'),
+              subtitle: Text('desctiption'),
+            ),
+          );
+        },
+      ),
     );
   }
 }
