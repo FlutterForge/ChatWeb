@@ -33,153 +33,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final GlobalKey<ScaffoldState> _scafoldKey = GlobalKey<ScaffoldState>();
 
-  final Set<LogicalKeyboardKey> _pressedKeys = {};
-
-  final FocusNode _focusNode = FocusNode();
-
-  bool isShowUserInfo = false;
-
-  @override
-  void initState() {
-    super.initState();
-    LocalDbService.instance.readData(key: 'uid').then(
-      (value) {
-        BlocProvider.of<HomeBloc>(context)
-            .add(GetUserInfoEvent(id: value ?? ''));
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _chattingController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return KeyboardListener(
-      autofocus: true,
-      focusNode: _focusNode,
-      onKeyEvent: (event) {
-        if (event is KeyDownEvent) {
-          _pressedKeys.add(event.logicalKey);
-          print('KEY DOWN EVENT');
-        } else if (event is KeyUpEvent) {
-          _pressedKeys.remove(event.logicalKey);
-          print('KEY UP EVENT');
-        }
-        onKeyEvent(event, _scafoldKey, _pressedKeys, () {
-          if (_width > 300) {
-            _width = 250;
-            setState(() {});
-          } else {
-            _width = 400;
-            setState(() {});
-          }
-        }, () {
-          print('SHIFT TAP P BOSILDI');
-          Navigator.pushAndRemoveUntil(context,
-              CupertinoPageRoute(builder: (_) => HelloScreen()), (_) => false);
-        });
-
-        if (_pressedKeys.contains(LogicalKeyboardKey.space)) {
-          if (isShowUserInfo) {
-            setState(() {
-              isShowUserInfo = false;
-            });
-          } else {
-            setState(() {
-              isShowUserInfo = true;
-            });
-          }
-        }
-      },
-      child: BlocListener<HomeBloc, HomeState>(
-        listener: (context, state) {
-          if (state.status == HomeStatus.error) {
-            showNotification(message: 'Internet connection error');
-          }
-          if (state.status == HomeStatus.success) {
-            showNotification(message: 'User data came');
-          }
-        },
-        child: Scaffold(
-          key: _scafoldKey,
-          drawer: CustomDrawer(
-            userModel: context.watch<HomeBloc>().state.userModel,
-          ),
-          body: Row(
-            children: [
-              Container(
-                color: AppColors.instance.white,
-                width: _width,
-                height: context.h,
-                child: Row(
-                  children: [
-                    ChatUsersWidget(
-                      chats: context.watch<HomeBloc>().state.userModel!.chats,
-                      globalContext: context,
-                      scafoldKey: _scafoldKey,
-                    ),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.resizeColumn,
-                      onEnter: (event) {
-                        isToMakeSmall = true;
-                        _lastCursorPosition = event.position;
-                        setState(() {});
-                      },
-                      onExit: (event) {
-                        isToMakeSmall = false;
-                        setState(() {});
-                      },
-                      child: GestureDetector(
-                        onPanStart: (details) {
-                          isResizable = true;
-                          setState(() {});
-                        },
-                        onPanUpdate: (details) {
-                          double delta = details.globalPosition.dx -
-                              _lastCursorPosition.dx;
-
-                          double newWidth = _width + delta;
-
-                          if (newWidth >= 260 && newWidth <= 450) {
-                            _width = newWidth;
-                            _lastCursorPosition = details.globalPosition;
-                            setState(() {});
-                          }
-                          print('WIDTH $_width');
-                        },
-                        onPanEnd: (details) {
-                          isResizable = false;
-                          setState(() {});
-                        },
-                        child: AnimatedContainer(
-                          curve: Curves.linear,
-                          duration: const Duration(milliseconds: 400),
-                          color: isToMakeSmall
-                              ? AppColors.instance.grey
-                              : Colors.transparent,
-                          height: double.infinity,
-                          width: isToMakeSmall ? context.w * 0.005 : 1,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: RightSideBar(
-                  controller: _chattingController,
-                ),
-              ),
-              Visibility(
-                  visible: isShowUserInfo,
-                  child: SizedBox(width: 300,child: ProfilePage())),
-            ],
-          ),
+    return Scaffold(
+      key: _scafoldKey,
+      drawer: Drawer(
+        child: Container(
+          width: 300,
+          color: Colors.blue,
+          child: IconButton(
+              onPressed: () {
+                _scafoldKey.currentState!.closeDrawer();
+              },
+              icon: Icon(Icons.one_x_mobiledata)),
         ),
       ),
     );
@@ -238,6 +104,7 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
           ),
+<<<<<<< HEAD
           ListTile(
             leading: const Icon(Icons.group),
             title: const Text('New Group'),
@@ -284,6 +151,20 @@ class CustomDrawer extends StatelessWidget {
             trailing: Switch(
               value: false,
               onChanged: (bool value) {},
+=======
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppColors.instance.blue,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomLeft: Radius.circular(16)),
+                  image: const DecorationImage(
+                    fit: BoxFit.fitWidth,
+                    image: NetworkImage(
+                        'https://images.unsplash.com/photo-1720048170996-40507a45c720?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8'),
+                  )),
+>>>>>>> 2760970 (Resolved merge conflict)
             ),
           ),
         ],
@@ -333,3 +214,102 @@ void showContextMenu(BuildContext context, Offset position) async {
     } else {}
   });
 }
+<<<<<<< HEAD
+=======
+
+class ChatUsersWidget extends StatelessWidget {
+  const ChatUsersWidget({
+    super.key,
+    required this.scafoldKey,
+    required this.globalContext,
+  });
+
+  final GlobalKey<ScaffoldState> scafoldKey;
+
+  final BuildContext globalContext;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: Stack(
+      children: [
+        Scrollbar(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 100),
+            itemCount: 15,
+            itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onDoubleTap: () {
+                    RenderBox itemBox = context.findRenderObject() as RenderBox;
+                    Offset position = itemBox.localToGlobal(Offset.zero);
+                    _showContextMenu(context, position);
+                  },
+                  onSecondaryTapDown: (details) {},
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 25,
+                      child: Icon(Icons.person),
+                    ),
+                    title: Text(
+                      'John Wick',
+                    ),
+                    subtitle: Text(
+                      "What'st up?",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Text(
+                      "${DateTime.now().day}/${DateTime.now().month}",
+                    ),
+                  ),
+                );
+              });
+          ),
+        ),
+        Positioned(
+            child: Container(
+          color: AppColors.instance.blue,
+          child: ListTile(
+              title: const Text('Chats'),
+              leading: IconButton(
+                  onPressed: () {
+                    scafoldKey.currentState!.openDrawer();
+                  },
+                  icon: const Icon(Icons.menu))),
+        ))
+      ],
+    ));
+  }
+}
+
+// ignore: must_be_immutable
+class UserCardWidget extends StatelessWidget {
+  UserCardWidget({super.key});
+
+  final ValueNotifier<bool> _isPicked = ValueNotifier(false);
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.grab,
+      onEnter: (event) => _isPicked.value = true,
+      onExit: (event) => _isPicked.value = false,
+      child: ValueListenableBuilder(
+          valueListenable: _isPicked,
+          builder: (context, _, __) {
+            return AnimatedCfontainer(
+              height: _isPicked.value ? 60 : 80,
+              duration: const Duration(milliseconds: 500),
+              color: _isPicked.value
+                  ? AppColors.instance.blue
+                  : AppColors.instance.white,
+              child: const ListTile(
+                title: Text('Username'),
+                subtitle: Text('desctiption'),
+              ),
+            );
+          }),
+    );
+  }
+}
+>>>>>>> 2760970 (Resolved merge conflict)
