@@ -21,6 +21,7 @@ class _CustomFloatingActionButtonState extends State<CustomTextField> {
       width: double.infinity,
       color: AppColors.instance.white,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
             onPressed: () {},

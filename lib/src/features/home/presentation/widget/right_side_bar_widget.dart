@@ -4,11 +4,13 @@ import 'package:chat_web/src/features/home/presentation/widget/custom_text_field
 import 'package:flutter/material.dart';
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/constants/vectors/app_vectors.dart';
+import 'package:rive/rive.dart';
 
 class RightSideBar extends StatelessWidget {
   final TextEditingController controller;
   const RightSideBar({
-    super.key, required this.controller,
+    super.key,
+    required this.controller,
   });
 
   @override
@@ -38,18 +40,31 @@ class RightSideBar extends StatelessWidget {
         Expanded(
           child: Stack(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.instance.blue,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage(AppVectors.instance.backgroundPattern),
-                  ),
+              SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: RiveAnimation.asset(
+                  'assets/images/breathing_animation.riv',
+                  fit: BoxFit.cover,
+                  onInit: (p0) {
+                    print('ON INIT WORKED ${p0.artboard}');
+                  },
+                  behavior: RiveHitTestBehavior.translucent,
                 ),
               ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: AppColors.instance.blue,
+              //     image: DecorationImage(
+              //       fit: BoxFit.cover,
+              //       image: AssetImage(AppVectors.instance.backgroundPattern),
+              //     ),
+              //   ),
+              // ),
               Positioned(
                 bottom: 0,
-                width: context.w * 0.55,
+                left: 0,
+                right: 0,
                 child: CustomTextField(controller: controller),
               ),
             ],

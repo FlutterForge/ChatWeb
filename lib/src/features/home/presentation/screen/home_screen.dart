@@ -74,7 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (details.globalPosition.dx < 260) {
                         return;
                       }
-                      _width += details.globalPosition.dx - _lastCursorPosition.dx;
+                      _width +=
+                          details.globalPosition.dx - _lastCursorPosition.dx;
                       _lastCursorPosition = details.globalPosition;
                       setState(() {});
                     },
@@ -85,7 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: AnimatedContainer(
                       curve: Curves.linear,
                       duration: const Duration(milliseconds: 400),
-                      color: isToMakeSmall ? AppColors.instance.grey : Colors.transparent,
+                      color: isToMakeSmall
+                          ? AppColors.instance.grey
+                          : Colors.transparent,
                       height: double.infinity,
                       width: isToMakeSmall ? context.w * 0.005 : 1,
                     ),
@@ -106,11 +109,13 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 void _showContextMenu(BuildContext context, Offset position) async {
-  final RenderBox overLay = Overlay.of(context).context.findRenderObject() as RenderBox;
+  final RenderBox overLay =
+      Overlay.of(context).context.findRenderObject() as RenderBox;
 
   await showMenu(
     context: context,
-    position: RelativeRect.fromLTRB(position.dx + 200, position.dy, overLay.size.width - position.dx, overLay.size.height - position.dy),
+    position: RelativeRect.fromLTRB(position.dx + 200, position.dy,
+        overLay.size.width - position.dx, overLay.size.height - position.dy),
     items: [
       const PopupMenuItem(
         mouseCursor: SystemMouseCursors.allScroll,
@@ -182,6 +187,8 @@ class ChatUsersWidget extends StatelessWidget {
         ),
         Positioned(
             child: Container(
+              alignment: Alignment.center,
+            height: 70,
           color: AppColors.instance.blue,
           child: ListTile(
             title: const Text('Chats'),
@@ -215,7 +222,9 @@ class UserCardWidget extends StatelessWidget {
           return AnimatedContainer(
             height: _isPicked.value ? 60 : 80,
             duration: const Duration(milliseconds: 500),
-            color: _isPicked.value ? AppColors.instance.blue : AppColors.instance.white,
+            color: _isPicked.value
+                ? AppColors.instance.blue
+                : AppColors.instance.white,
             child: const ListTile(
               title: Text('Username'),
               subtitle: Text('desctiption'),
