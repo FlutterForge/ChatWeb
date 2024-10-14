@@ -70,13 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       isResizable = true;
                       setState(() {});
                     },
-                    onPanUpdate: (details) {
-                      if (details.globalPosition.dx < 260) {
-                        return;
+                     onPanUpdate: (details) {
+                      double delta =
+                          details.globalPosition.dx - _lastCursorPosition.dx;
+
+                      double newWidth = _width + delta;
+
+                      if (newWidth >= 260 && newWidth <= 450) {
+                        _width = newWidth;
+                        _lastCursorPosition = details.globalPosition;
+                        setState(() {});
                       }
-                      _width += details.globalPosition.dx - _lastCursorPosition.dx;
-                      _lastCursorPosition = details.globalPosition;
-                      setState(() {});
                     },
                     onPanEnd: (details) {
                       isResizable = false;

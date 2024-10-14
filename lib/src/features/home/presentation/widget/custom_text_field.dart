@@ -32,11 +32,14 @@ class _CustomFloatingActionButtonState extends State<CustomTextField> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               suffix: IconButton(
                 onPressed: () {},
-                icon: SvgPicture.asset(widget.controller.text.isEmpty ? AppVectors.instance.attachFile : AppVectors.instance.send),
+                icon: SvgPicture.asset(widget.controller.text.isEmpty
+                    ? AppVectors.instance.attachFile
+                    : AppVectors.instance.send),
               ),
               controller: widget.controller,
               onChanged: (value) {
-                if (widget.controller.text.length == 1 || widget.controller.text.isEmpty) {
+                if (widget.controller.text.length == 1 ||
+                    widget.controller.text.isEmpty) {
                   setState(() {});
                 }
               },
@@ -46,11 +49,14 @@ class _CustomFloatingActionButtonState extends State<CustomTextField> {
               ),
             ),
           ),
-          Visibility(
-            visible: widget.controller.text.isEmpty,
-            child: IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset(AppVectors.instance.microphone),
+          Padding(
+            padding: const EdgeInsets.only(right: 205),
+            child: Visibility(
+              visible: widget.controller.text.isEmpty,
+              child: IconButton(
+                onPressed: () {},
+                icon: SvgPicture.asset(AppVectors.instance.microphone),
+              ),
             ),
           ),
         ],
