@@ -191,15 +191,26 @@ void _showContextMenu(BuildContext context, Offset position) async {
     position: RelativeRect.fromLTRB(position.dx + 200, position.dy,
         overLay.size.width - position.dx, overLay.size.height - position.dy),
     items: [
-      const PopupMenuItem(
-        mouseCursor: SystemMouseCursors.allScroll,
-        textStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),
+     const PopupMenuItem(
         value: 'delete',
-        child: Text("Delete"),
+        child: Row(
+          children: [
+            Icon(Icons.delete, color: Colors.red),
+            SizedBox(width: 10),
+            Text("Delete",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
-      const PopupMenuItem(
+     const PopupMenuItem(
         value: 'pin',
-        child: Text("Pin"),
+        child: Row(
+          children: [
+            Icon(Icons.push_pin, color: Colors.blue),
+            SizedBox(width: 10),
+            Text("Pin", style: TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     ],
   ).then((value) {
