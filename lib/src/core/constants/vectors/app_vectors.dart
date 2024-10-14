@@ -9,8 +9,14 @@ class AppVectors {
   final String microphone = 'assets/icons/microphone.svg';
   final String stickers = 'assets/icons/stickers.svg';
   final String send = 'assets/icons/send.svg';
+  final String next = 'assets/icons/next.svg';
 
+  final String icon = 'assets/images/icon.png';
+  
   //! Patterns
   final String backgroundPattern = 'assets/images/background_white_pattern.png';
   
+  //! Rives
+  final String authTeddy = 'assets/rive/auth_teddy.riv';
+
 }

@@ -32,14 +32,85 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scafoldKey,
       drawer: Drawer(
-        child: Container(
-          width: 300,
-          color: Colors.blue,
-          child: IconButton(
-              onPressed: () {
-                _scafoldKey.currentState!.closeDrawer();
-              },
-              icon: const Icon(CupertinoIcons.xmark)),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      'J',
+                      style: TextStyle(fontSize: 24, color: Colors.blue),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'John wick',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  Text(
+                    'Set Emoji Status',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.group),
+              title: const Text('New Group'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.campaign),
+              title: const Text('New Channel'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('My Stories'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_balance_wallet),
+              title: const Text('Wallet'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.contacts),
+              title: const Text('Contacts'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.call),
+              title: const Text('Calls'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.bookmark),
+              title: const Text('Saved Messages'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.nightlight_round),
+              title: const Text('Night Mode'),
+              trailing: Switch(
+                value: false,
+                onChanged: (bool value) {},
+              ),
+            ),
+          ],
         ),
       ),
       body: Row(
@@ -71,12 +142,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       setState(() {});
                     },
                     onPanUpdate: (details) {
-                      if (details.globalPosition.dx < 260) {
-                        return;
+                      double delta =
+                          details.globalPosition.dx - _lastCursorPosition.dx;
+
+                      double newWidth = _width + delta;
+
+                      if (newWidth >= 260 && newWidth <= 450) {
+                        _width = newWidth;
+                        _lastCursorPosition = details.globalPosition;
+                        setState(() {});
                       }
-                      _width += details.globalPosition.dx - _lastCursorPosition.dx;
-                      _lastCursorPosition = details.globalPosition;
-                      setState(() {});
                     },
                     onPanEnd: (details) {
                       isResizable = false;
@@ -85,7 +160,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: AnimatedContainer(
                       curve: Curves.linear,
                       duration: const Duration(milliseconds: 400),
-                      color: isToMakeSmall ? AppColors.instance.grey : Colors.transparent,
+                      color: isToMakeSmall
+                          ? AppColors.instance.grey
+                          : Colors.transparent,
                       height: double.infinity,
                       width: isToMakeSmall ? context.w * 0.005 : 1,
                     ),
@@ -106,7 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 void _showContextMenu(BuildContext context, Offset position) async {
-  final RenderBox overLay = Overlay.of(context).context.findRenderObject() as RenderBox;
+  final RenderBox overLay =
+      Overlay.of(context).context.findRenderObject() as RenderBox;
 
   await showMenu(
     shape: const RoundedRectangleBorder(
@@ -115,17 +193,29 @@ void _showContextMenu(BuildContext context, Offset position) async {
     color: AppColors.instance.white,
     context: context,
     shadowColor: AppColors.instance.blue,
-    position: RelativeRect.fromLTRB(position.dx + 200, position.dy, overLay.size.width - position.dx, overLay.size.height - position.dy),
+    position: RelativeRect.fromLTRB(position.dx + 200, position.dy,
+        overLay.size.width - position.dx, overLay.size.height - position.dy),
     items: [
-      const PopupMenuItem(
-        mouseCursor: SystemMouseCursors.allScroll,
-        textStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),
+     const PopupMenuItem(
         value: 'delete',
-        child: Text("Delete"),
+        child: Row(
+          children: [
+            Icon(Icons.delete, color: Colors.red),
+            SizedBox(width: 10),
+            Text("Delete",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
-      const PopupMenuItem(
+     const PopupMenuItem(
         value: 'pin',
-        child: Text("Pin"),
+        child: Row(
+          children: [
+            Icon(Icons.push_pin, color: Colors.blue),
+            SizedBox(width: 10),
+            Text("Pin", style: TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     ],
   ).then((value) {
@@ -243,12 +333,18 @@ child: ListView.builder(
             child: Container(
           color: AppColors.instance.blue,
           child: ListTile(
-            title: const Text('Chats'),
+            title: Text(
+              'Chats',
+              style: TextStyle(color: AppColors.instance.white),
+            ),
             leading: IconButton(
               onPressed: () {
                 widget.scafoldKey.currentState!.openDrawer();
               },
-              icon: const Icon(Icons.menu),
+              icon: Icon(
+                Icons.menu,
+                color: AppColors.instance.white,
+              ),
             ),
           ),
         ))
@@ -274,7 +370,9 @@ class UserCardWidget extends StatelessWidget {
           return AnimatedContainer(
             height: _isPicked.value ? 60 : 80,
             duration: const Duration(milliseconds: 500),
-            color: _isPicked.value ? AppColors.instance.blue : AppColors.instance.white,
+            color: _isPicked.value
+                ? AppColors.instance.blue
+                : AppColors.instance.white,
             child: const ListTile(
               title: Text('Username'),
               subtitle: Text('desctiption'),
