@@ -49,8 +49,8 @@ class RightSideBar extends StatelessWidget {
               ),
               Positioned(
                 bottom: 0,
-                width: context.w * 0.83,
-                child: CustomTextField(controller: controller),
+                width: context.w * 0.55,
+                child: CustomTextField(controller: controller)
               ),
             ],
           ),
