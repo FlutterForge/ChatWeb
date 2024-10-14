@@ -7,8 +7,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart';
+
 void main(List<String> args) {
-  final Dio dio = Dio();
+  final Dio dio = Dio()
 
   runApp(
     MultiBlocProvider(
