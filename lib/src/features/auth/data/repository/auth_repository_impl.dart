@@ -7,11 +7,12 @@ class AuthRepositoryImpl extends AuthRepository {
   final AuthDataSource _dataSource;
 
   AuthRepositoryImpl({required AuthDataSource dataSource}) : _dataSource = dataSource;
+
   @override
   Future<Either<String, int>> createUser(UserModel model) async {
     try {
-      final int uid = await _dataSource.createUser(model);
-      return Right(uid);
+      final result = await _dataSource.createUser(model);
+      return Right(result);
     } catch (e) {
       return Left(e.toString());
     }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/constants/vectors/app_vectors.dart';
 import 'package:chat_web/src/core/extension/context_text_theme.dart';
+import 'package:chat_web/src/core/utils/show_notification.dart';
 import 'package:chat_web/src/core/utils/teddy_animation.dart';
 import 'package:chat_web/src/features/auth/presentation/screen/create_user_screen.dart';
 import 'package:flutter/material.dart';
@@ -31,22 +32,11 @@ class _OtpScreenState extends State<OtpScreen> {
     super.initState();
     Timer(
       const Duration(milliseconds: 1500),
-      () {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: AppColors.instance.grey,
-              duration: const Duration(seconds: 8),
-              dismissDirection: DismissDirection.horizontal,
-              content: Text(
-                code.toString(),
-                style: context.textTheme.titleMedium,
-              ),
-            ),
-          );
-        }
-      },
+      () => showNotification(message:  """🔑 *Your Confirmation Code*:
+
+`$code`
+
+Please enter this code to verify your account."""),
     );
   }
 
@@ -137,18 +127,11 @@ class _OtpScreenState extends State<OtpScreen> {
             TextButton(
               onPressed: () {
                 code = Random().nextInt(89999) + 10000;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: AppColors.instance.grey,
-                    duration: const Duration(seconds: 8),
-                    dismissDirection: DismissDirection.horizontal,
-                    content: Text(
-                      code.toString(),
-                      style: context.textTheme.titleMedium,
-                    ),
-                  ),
-                );
+                showNotification(message:  """🔑 *Your Confirmation Code*:
+
+`$code`
+
+Please enter this code to verify your account.""");
               },
               child: Text(
                 'Resend SMS code',

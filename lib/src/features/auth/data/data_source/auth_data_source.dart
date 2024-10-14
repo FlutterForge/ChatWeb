@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:chat_web/src/core/utils/base_url.dart';
 import 'package:chat_web/src/features/auth/data/model/user_model.dart';
 import 'package:dio/dio.dart';
 
@@ -14,32 +17,20 @@ class AuthDataSourceImpl extends AuthDataSource {
   Future<int> createUser(UserModel model) async {
     try {
       print(model.toJson());
+      model.isOnline = true;
       final Response response = await _dio.post(
-        'http://192.168.0.105:8000/user',
+        'http://$baseUrl:8000/user',
         data: model.toJson(),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
       );
-      print(
-          "Response: ${response.data}, ${response.statusMessage}, ${response.statusCode}");
+
+      print("Response: ${response.statusCode}, ${response.statusMessage}, ${response.data}");
       if (response.statusCode == 200) {
-        print('SUCCESS HERE');
-        return response
-            .data; // Assuming your API returns a user ID or something similar
+        print(jsonDecode(response.data));
+        final UserModel result = UserModel.fromJson(jsonDecode(response.data));
+        return result.id;
       } else {
         throw Exception('Failed to create user: ${response.statusMessage}');
       }
-    } on DioException catch (dioError) {
-      if (dioError.type == DioExceptionType.connectionError) {
-        print('Network error: ${dioError.message}');
-      } else {
-        print(
-            'Dio error: ${dioError.response?.statusMessage}, ${dioError.response?.statusCode}');
-      }
-      rethrow;
     } catch (e) {
       print('Error: $e');
       rethrow;

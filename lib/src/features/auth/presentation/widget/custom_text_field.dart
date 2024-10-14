@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/features/auth/presentation/screen/otp_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,11 +52,14 @@ class CustomTextField extends StatelessWidget {
                     ),
                     child: const Text('Yes'),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OtpScreen(
-                            phoneNumber: _phoneNumberController.text,
+                      Timer(
+                        const Duration(seconds: 1),
+                        () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OtpScreen(
+                              phoneNumber: _phoneNumberController.text,
+                            ),
                           ),
                         ),
                       );

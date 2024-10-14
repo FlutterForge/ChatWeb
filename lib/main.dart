@@ -1,3 +1,4 @@
+import 'package:chat_web/src/core/utils/local_db_service.dart';
 import 'package:chat_web/src/features/auth/data/data_source/auth_data_source.dart';
 import 'package:chat_web/src/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:chat_web/src/features/auth/domain/usecase/create_user_usecase.dart';
@@ -8,8 +9,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main(List<String> args) {
+void main(List<String> args) async {
   final Dio dio = Dio();
+  final String? uid = await LocalDbService.instance.readData(key: 'uid');
 
   runApp(
     MultiBlocProvider(
@@ -24,13 +26,14 @@ void main(List<String> args) {
           ),
         ),
       ],
-      child: const ChatWeb(),
+      child: ChatWeb(uid: uid),
     ),
   );
 }
 
 class ChatWeb extends StatelessWidget {
-  const ChatWeb({super.key});
+  final String? uid;
+  const ChatWeb({super.key, this.uid});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class ChatWeb extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Telegram',
       theme: ThemeData.light(),
-      home: const HomeScreen(),
+      home: uid == null ? HelloScreen() : HomeScreen(),
     );
   }
 }
