@@ -1,16 +1,9 @@
 # chat_web
 
-A new Flutter project.
+<h2>UI</h2>
 
-## Getting Started
+<img width="1624" alt="image" src="https://github.com/user-attachments/assets/5343844c-2d04-4800-bf80-086c611bca81">
+<h4>Splash Screen</h4>
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img width="1624" alt="image" src="https://github.com/user-attachments/assets/60dc17b5-7491-4fef-a5c7-cdcabcf42383">
+<h4>Auth screen</h4>
