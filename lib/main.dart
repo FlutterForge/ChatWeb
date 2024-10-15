@@ -8,11 +8,13 @@ import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart'
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main(List<String> args) async {
+void main(List<String> args)async{
   final Dio dio = Dio();
   final String? uid = await LocalDbService.instance.readData(key: 'uid');
-
+  await Hive.initFlutter();
+  await Hive.openBox('userStatus');
   runApp(
     MultiBlocProvider(
       providers: [
