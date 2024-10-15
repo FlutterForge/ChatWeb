@@ -1,11 +1,11 @@
-
 class UserModel {
   int id;
-  final String username;
-  final String phoneNumber;
-  final String? profilePicture;
-  final String? bio;
-  final bool isOnline;
+  String username;
+  String phoneNumber;
+  String? profilePicture; 
+  String? bio; 
+  bool isOnline;
+
   UserModel({
     this.id = 0,
     required this.username,
@@ -18,10 +18,10 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] ?? 0,
-      username: json['username'] ,
-      phoneNumber: json['phoneNumber'] ,
-      profilePicture: json['profilePicture'] ,
-      bio: json['bio'] ,
+      username: json['username'] ?? '',
+      phoneNumber: json['phoneNumber'] ?? '',
+      profilePicture: json['profilePicture'],
+      bio: json['bio'], 
       isOnline: json['isOnline'] ?? false,
     );
   }

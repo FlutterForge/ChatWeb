@@ -8,5 +8,5 @@ class CreateUserUsecase extends UseCase {
   CreateUserUsecase({required AuthRepository repository}) : _repository = repository;
 
   @override
-  Future<Either> call(params) => _repository.createUser(params);
+  Future<Either<String, int>> call(params) => _repository.createUser(params);
 }
