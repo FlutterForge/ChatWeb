@@ -2,7 +2,9 @@ import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/extension/size_extenstion.dart';
 import 'package:chat_web/src/core/utils/key_board_listen_function.dart';
 import 'package:chat_web/src/features/auth/presentation/screen/hello_screen.dart';
+import 'package:chat_web/src/features/home/presentation/widget/chat_user_widget.dart';
 import 'package:chat_web/src/features/home/presentation/widget/right_side_bar_widget.dart';
+import 'package:chat_web/src/features/home/presentation/widget/users_side_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -209,7 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: RightSideBar(
                 controller: _chattingController,
               ),
-            )
+            ),
+            Expanded(child: ProfilePage()),
           ],
         ),
       ),
@@ -217,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-void _showContextMenu(BuildContext context, Offset position) async {
+void showContextMenu(BuildContext context, Offset position) async {
   final RenderBox overLay =
       Overlay.of(context).context.findRenderObject() as RenderBox;
 
@@ -257,165 +260,4 @@ void _showContextMenu(BuildContext context, Offset position) async {
     if (value == 'delete') {
     } else {}
   });
-}
-
-class ChatUsersWidget extends StatefulWidget {
-  const ChatUsersWidget({
-    super.key,
-    required this.scafoldKey,
-    required this.globalContext,
-  });
-
-  final GlobalKey<ScaffoldState> scafoldKey;
-
-  final BuildContext globalContext;
-
-  @override
-  State<ChatUsersWidget> createState() => _ChatUsersWidgetState();
-}
-
-Color bg = AppColors.instance.white;
-int? _hoveredIndex;
-
-class _ChatUsersWidgetState extends State<ChatUsersWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-        child: Stack(
-      children: [
-        Scrollbar(
-          child: ListView.builder(
-            padding: const EdgeInsets.only(top: 60),
-            itemCount: 15,
-            itemBuilder: (BuildContext context, int index) {
-              return MouseRegion(
-                onHover: (details) {
-                  setState(() {
-                    _hoveredIndex = index;
-                  });
-                },
-                onExit: (details) {
-                  setState(() {
-                    _hoveredIndex = null;
-                  });
-                },
-                child: GestureDetector(
-                  onDoubleTap: () {
-                    RenderBox itemBox = context.findRenderObject() as RenderBox;
-                    Offset position = itemBox.localToGlobal(Offset.zero);
-                    _showContextMenu(context, position);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: 7, top: 7),
-                    decoration: BoxDecoration(
-                        color: _hoveredIndex == index
-                            ? AppColors.instance.grey.withValues(alpha: 0.4)
-                            : Colors.white),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: AppColors.instance.blue,
-                        child: Icon(Icons.person),
-                      ),
-                      title: const Text(
-                        'John Wick',
-                      ),
-                      subtitle: Row(
-                        children: [
-                          index % 2 == 0
-                              ? const Text('WhatsApp')
-                              : Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.instance.blue,
-                                    borderRadius: BorderRadius.circular(4),
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/background_white_pattern.png'),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Visibility(
-                            visible: _hoveredIndex == index,
-                            child: Transform.rotate(
-                              angle: 0.7,
-                              child: Icon(
-                                CupertinoIcons.pin_fill,
-                                color: AppColors.instance.blue,
-                                size: 17,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            "${DateTime.now().day}/${DateTime.now().month}",
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        Positioned(
-            child: Container(
-          color: AppColors.instance.blue,
-          child: ListTile(
-            title: Text(
-              'Chats',
-              style: TextStyle(color: AppColors.instance.white),
-            ),
-            leading: IconButton(
-              onPressed: () {
-                widget.scafoldKey.currentState!.openDrawer();
-              },
-              icon: Icon(
-                Icons.menu,
-                color: AppColors.instance.white,
-              ),
-            ),
-          ),
-        ))
-      ],
-    ));
-  }
-}
-
-class UserCardWidget extends StatelessWidget {
-  UserCardWidget({super.key});
-
-  final ValueNotifier<bool> _isPicked = ValueNotifier(false);
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.grab,
-      onEnter: (event) => _isPicked.value = true,
-      onExit: (event) => _isPicked.value = false,
-      child: ValueListenableBuilder(
-        valueListenable: _isPicked,
-        builder: (context, _, __) {
-          return AnimatedContainer(
-            height: _isPicked.value ? 60 : 80,
-            duration: const Duration(milliseconds: 500),
-            color: _isPicked.value
-                ? AppColors.instance.blue
-                : AppColors.instance.white,
-            child: const ListTile(
-              title: Text('Username'),
-              subtitle: Text('desctiption'),
-            ),
-          );
-        },
-      ),
-    );
-  }
 }
