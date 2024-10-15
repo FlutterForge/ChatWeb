@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatUsersWidget extends StatefulWidget {
+  final List<dynamic> chats;
+
   const ChatUsersWidget({
     super.key,
+    required this.chats,
     required this.scafoldKey,
     required this.globalContext,
   });
@@ -30,7 +33,7 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
         Scrollbar(
           child: ListView.builder(
             padding: const EdgeInsets.only(top: 60),
-            itemCount: 15,
+            itemCount: widget.chats.length,
             itemBuilder: (BuildContext context, int index) {
               return MouseRegion(
                 onHover: (details) {

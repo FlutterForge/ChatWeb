@@ -17,7 +17,6 @@ class AuthDataSourceImpl extends AuthDataSource {
   Future<int> createUser(UserModel model) async {
     try {
       print(model.toJson());
-      model.isOnline = true;
       final Response response = await _dio.post(
         'http://$baseUrl:8000/user',
         data: model.toJson(),
