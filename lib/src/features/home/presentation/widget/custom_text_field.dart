@@ -44,11 +44,7 @@ class _CustomFloatingActionButtonState extends State<CustomTextField> {
                             checkPlatformCompatibility: true,
                             emojiViewConfig: EmojiViewConfig(
                               // Issue: https://github.com/flutter/flutter/issues/28894
-                              emojiSizeMax: 28 *
-                                  (foundation.defaultTargetPlatform ==
-                                          TargetPlatform.iOS
-                                      ? 1.20
-                                      : 1.0),
+                              emojiSizeMax: 28 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.20 : 1.0),
                             ),
                             viewOrderConfig: const ViewOrderConfig(
                               top: EmojiPickerItem.categoryBar,
@@ -57,8 +53,7 @@ class _CustomFloatingActionButtonState extends State<CustomTextField> {
                             ),
                             skinToneConfig: const SkinToneConfig(),
                             categoryViewConfig: const CategoryViewConfig(),
-                            bottomActionBarConfig:
-                                const BottomActionBarConfig(),
+                            bottomActionBarConfig: const BottomActionBarConfig(),
                             searchViewConfig: const SearchViewConfig(),
                           ),
                         ),
@@ -76,14 +71,11 @@ class _CustomFloatingActionButtonState extends State<CustomTextField> {
                 onPressed: () async {
                   final data = await FilePicker.platform.pickFiles();
                 },
-                icon: SvgPicture.asset(widget.controller.text.isEmpty
-                    ? AppVectors.instance.attachFile
-                    : AppVectors.instance.send),
+                icon: SvgPicture.asset(widget.controller.text.isEmpty ? AppVectors.instance.attachFile : AppVectors.instance.send),
               ),
               controller: widget.controller,
               onChanged: (value) {
-                if (widget.controller.text.length == 1 ||
-                    widget.controller.text.isEmpty) {
+                if (widget.controller.text.length == 1 || widget.controller.text.isEmpty) {
                   setState(() {});
                 }
               },

@@ -1,3 +1,4 @@
+import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
 import 'package:hive/hive.dart';
 
 @HiveType(typeId: 0)
@@ -8,7 +9,7 @@ class UserModel {
   final String? profilePicture;
   final String? bio;
   final bool isOnline;
-  final List<dynamic> chats;
+  final List<ChatModel> chats;
   UserModel({
     this.id = 0,
     required this.username,
@@ -26,20 +27,22 @@ class UserModel {
         username: json['username'] ?? '',
         phoneNumber: json['phoneNumber'] ?? '',
         profilePicture: json['profilePicture'] ?? '',
-        chats: (json['chats'] as List<dynamic>?) ?? <dynamic>[],
         bio: json['bio'] ?? '',
         isOnline: json['isOnline'] ?? false,
+        chats: (json['chats'] as List<dynamic>?)
+                ?.map((chatJson) => ChatModel.fromJson(chatJson))
+                .toList() ?? [],
       );
-    } catch (stack, error) {
-      print('FROM JSON ERROR $stack $error');
+    } catch (error) {
+      print('FROM JSON ERROR: $error');
       return UserModel(
         id: json['id'] ?? 0,
-        username: json['username'],
-        phoneNumber: json['phoneNumber'],
+        username: json['username'] ?? '',
+        phoneNumber: json['phoneNumber'] ?? '',
         profilePicture: json['profilePicture'],
-        chats: json['chats'] ?? [],
-        bio: json['bio'],
+        bio: json['bio'] ?? '',
         isOnline: json['isOnline'] ?? false,
+        chats: [], 
       );
     }
   }
@@ -52,6 +55,7 @@ class UserModel {
       'profilePicture': profilePicture,
       'bio': bio,
       'isOnline': isOnline,
+      'chats': chats.map((chat) => chat.toJson()).toList(),
     };
   }
 }
