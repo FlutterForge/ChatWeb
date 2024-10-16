@@ -53,9 +53,7 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
                     Offset position = itemBox.localToGlobal(Offset.zero);
                     showContextMenu(context, position);
                   },
-                  onTap: (){
-                    
-                  },
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.only(bottom: 7, top: 7),
                     decoration: BoxDecoration(
@@ -71,7 +69,8 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
                       title: Text(
                         widget.chats![index].name,
                       ),
-                      subtitle: Text(widget.chats![index].messages.last.message),
+                      subtitle:
+                          Text(widget.chats![index].messages.last.message),
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

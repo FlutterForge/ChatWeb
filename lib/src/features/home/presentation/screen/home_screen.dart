@@ -1,4 +1,6 @@
+import 'package:chat_web/src/core/comman/custom_drawer.dart';
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
+import 'package:chat_web/src/core/extension/print_styles.dart';
 import 'package:chat_web/src/core/extension/size_extenstion.dart';
 import 'package:chat_web/src/core/utils/key_board_listen_function.dart';
 import 'package:chat_web/src/core/utils/local_db_service.dart';
@@ -98,18 +100,20 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: BlocListener<HomeBloc, HomeState>(
         listener: (context, state) {
+          '****************${context.watch<HomeBloc>().state.userModel!.chats}*******************'
+              .printError();
           if (state.status == HomeStatus.error) {
             showNotification(message: 'Internet connection error');
           }
           if (state.status == HomeStatus.success) {
             showNotification(message: 'User data came');
+            print(
+                '****************${context.watch<HomeBloc>().state.userModel!.chats}*******************');
           }
         },
         child: Scaffold(
           key: _scafoldKey,
-          drawer: CustomDrawer(
-            userModel: context.watch<HomeBloc>().state.userModel,
-          ),
+          drawer: CustomDrawer(),
           body: Row(
             children: [
               Container(
@@ -172,122 +176,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: RightSideBar(
-                  model: context.watch<HomeBloc>().state.userModel!.chats[0],
+                  model: context
+                          .watch<HomeBloc>()
+                          .state
+                          .userModel!
+                          .chats
+                          .isNotEmpty
+                      ? context.watch<HomeBloc>().state.userModel!.chats[0]
+                      : null,
                   controller: _chattingController,
                 ),
               ),
               Visibility(
                   visible: isShowUserInfo,
-                  child: SizedBox(width: 300,child: ProfilePage())),
+                  child: SizedBox(width: 300, child: ProfilePage())),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class CustomDrawer extends StatelessWidget {
-  final UserModel? userModel;
-
-  const CustomDrawer({
-    super.key,
-    required this.userModel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    userModel!.username.substring(0, 1),
-                    style: TextStyle(fontSize: 24, color: Colors.blue),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  userModel!.username,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      userModel!.isOnline ? 'online' : 'offline',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    SizedBox(width: 10),
-                    CircleAvatar(
-                      radius: 4,
-                      backgroundColor: userModel!.isOnline
-                          ? AppColors.instance.green
-                          : AppColors.instance.red,
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.group),
-            title: const Text('New Group'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.campaign),
-            title: const Text('New Channel'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.history),
-            title: const Text('My Stories'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_balance_wallet),
-            title: const Text('Wallet'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.contacts),
-            title: const Text('Contacts'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.call),
-            title: const Text('Calls'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.bookmark),
-            title: const Text('Saved Messages'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.nightlight_round),
-            title: const Text('Night Mode'),
-            trailing: Switch(
-              value: false,
-              onChanged: (bool value) {},
-            ),
-          ),
-        ],
       ),
     );
   }

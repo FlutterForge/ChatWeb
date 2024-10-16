@@ -36,7 +36,6 @@ class _RightSideBarState extends State<RightSideBar> {
     _lastSeen = _userStatusService.getLastSeenTime();
   }
 
-
   void _toggleStatus() {
     setState(() {
       _isOnline = !_isOnline;
@@ -70,13 +69,14 @@ class _RightSideBarState extends State<RightSideBar> {
                 width: 260,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.instance.black.withValues(alpha: 0.5),
+                    color: AppColors.instance.black.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
                     child: Text(
                       'Select a chat to Start Messaging',
-                      style: context.textTheme.titleMedium!.copyWith(color: AppColors.instance.white),
+                      style: context.textTheme.titleMedium!
+                          .copyWith(color: AppColors.instance.white),
                     ),
                   ),
                 ),
@@ -178,17 +178,22 @@ class _RightSideBarState extends State<RightSideBar> {
                         color: AppColors.instance.blue,
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage(AppVectors.instance.backgroundPattern),
+                          image:
+                              AssetImage(AppVectors.instance.backgroundPattern),
                         ),
                       ),
                       child: ListView.separated(
                         itemCount: widget.model!.messages.length,
                         padding: EdgeInsets.symmetric(horizontal: 20),
-                        separatorBuilder: (context, index) => const SizedBox(height: 20),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 20),
                         itemBuilder: (context, index) => SizedBox(
                           width: double.infinity,
                           child: Align(
-                            alignment: widget.model!.id == widget.model!.messages[index].sender ? Alignment.centerRight : Alignment.centerLeft,
+                            alignment: widget.model!.id ==
+                                    widget.model!.messages[index].sender
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
                             child: Container(
                               padding: EdgeInsets.all(10),
                               decoration: BoxDecoration(
@@ -203,7 +208,10 @@ class _RightSideBarState extends State<RightSideBar> {
                         ),
                       ),
                     ),
-                    Positioned(bottom: 0, width: context.w * 0.87, child: CustomTextField(controller: widget.controller)),
+                    Positioned(
+                        bottom: 0,
+                        width: context.w * 0.87,
+                        child: CustomTextField(controller: widget.controller)),
                   ],
                 ),
               ),
