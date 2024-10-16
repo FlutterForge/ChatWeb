@@ -172,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: RightSideBar(
+                  model: context.watch<HomeBloc>().state.userModel!.chats[0],
                   controller: _chattingController,
                 ),
               ),

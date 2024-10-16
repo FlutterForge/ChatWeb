@@ -1,10 +1,11 @@
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
+import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
 import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatUsersWidget extends StatefulWidget {
-  final List<dynamic> chats;
+  final List<ChatModel>? chats;
 
   const ChatUsersWidget({
     super.key,
@@ -33,7 +34,7 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
         Scrollbar(
           child: ListView.builder(
             padding: const EdgeInsets.only(top: 60),
-            itemCount: widget.chats.length,
+            itemCount: widget.chats == null ? 0 : widget.chats!.length,
             itemBuilder: (BuildContext context, int index) {
               return MouseRegion(
                 onHover: (details) {
@@ -52,6 +53,9 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
                     Offset position = itemBox.localToGlobal(Offset.zero);
                     showContextMenu(context, position);
                   },
+                  onTap: (){
+                    
+                  },
                   child: Container(
                     padding: const EdgeInsets.only(bottom: 7, top: 7),
                     decoration: BoxDecoration(
@@ -64,28 +68,10 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
                         backgroundColor: AppColors.instance.blue,
                         child: Icon(Icons.person),
                       ),
-                      title: const Text(
-                        'Jamol Bro',
+                      title: Text(
+                        widget.chats![index].name,
                       ),
-                      subtitle: Row(
-                        children: [
-                          index % 2 == 0
-                              ? const Text('WhatsApp')
-                              : Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.instance.blue,
-                                    borderRadius: BorderRadius.circular(4),
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/background_white_pattern.png'),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
+                      subtitle: Text(widget.chats![index].messages.last.message),
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

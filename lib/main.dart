@@ -9,6 +9,7 @@ void main(List<String> args) async {
 
 class ChatWeb extends StatelessWidget {
   final String? uid;
+  
   const ChatWeb({super.key, this.uid});
 
   @override

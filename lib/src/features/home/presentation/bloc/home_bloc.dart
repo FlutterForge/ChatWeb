@@ -6,15 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetUserInfoUsecase getUserInfoUsecase;
 
-  HomeBloc({required this.getUserInfoUsecase})
-      : super(HomeState(status: HomeStatus.initial)) {
+  HomeBloc({required this.getUserInfoUsecase}) : super(HomeState(status: HomeStatus.initial)) {
     on<GetUserInfoEvent>((event, emit) async {
       try {
         final result = await getUserInfoUsecase.call(event.id);
         if (result.isRight) {
           print('SUCCESS CAME');
-          emit(state.copyWith(
-              status: HomeStatus.success, userModel: result.right));
+          print(result.right.chats);
+          emit(state.copyWith(status: HomeStatus.success, userModel: result.right));
         } else {
           print('EXCEPTION CAME');
           throw Exception(result.left);
