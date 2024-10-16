@@ -1,14 +1,16 @@
-import 'dart:math';
 import 'dart:async';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
+import 'package:rive/rive.dart';
+
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/constants/vectors/app_vectors.dart';
 import 'package:chat_web/src/core/extension/context_text_theme.dart';
 import 'package:chat_web/src/core/utils/show_notification.dart';
 import 'package:chat_web/src/core/utils/teddy_animation.dart';
 import 'package:chat_web/src/features/auth/presentation/screen/create_user_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
-import 'package:rive/rive.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.phoneNumber});
