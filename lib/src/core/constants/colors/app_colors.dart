@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -9,4 +10,6 @@ class AppColors {
   final Color blue = const Color(0xff0088CC);
   final Color grey = const Color(0xff787878);
   final Color red = const Color(0xffFF0000);
+  final Color green = CupertinoColors.activeGreen;
+  final Color black = const Color(0xff000000);
 }
