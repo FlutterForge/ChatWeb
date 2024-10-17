@@ -1,4 +1,5 @@
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
+import 'package:chat_web/src/core/extension/print_styles.dart';
 import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
 import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,7 @@ int? _hoveredIndex;
 class _ChatUsersWidgetState extends State<ChatUsersWidget> {
   @override
   Widget build(BuildContext context) {
+    'STATE CHATS LENGTH ${widget.chats!.length}'.printWarning();
     return Expanded(
         child: Stack(
       children: [

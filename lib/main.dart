@@ -1,15 +1,17 @@
 import 'package:chat_web/src/core/utils/initiat_source.dart';
+import 'package:chat_web/src/core/utils/local_db_service.dart';
 import 'package:chat_web/src/features/auth/presentation/screen/hello_screen.dart';
 import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) async {
+  LocalDbService.instance.writeData(key: 'uid', value: '0');
   await initialSource();
 }
 
 class ChatWeb extends StatelessWidget {
   final String? uid;
-  
+
   const ChatWeb({super.key, this.uid});
 
   @override

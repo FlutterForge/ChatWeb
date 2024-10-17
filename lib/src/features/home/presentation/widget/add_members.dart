@@ -1,7 +1,16 @@
+import 'package:chat_web/src/core/utils/initiat_source.dart';
+import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
+import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
+import 'package:chat_web/src/features/home/presentation/bloc/home_event.dart';
 import 'package:chat_web/src/features/home/presentation/widget/fake_user_base.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddMembersDialog extends StatefulWidget {
+  final ChatModel chatModel;
+
+  const AddMembersDialog({super.key, required this.chatModel});
+
   @override
   _AddMembersDialogState createState() => _AddMembersDialogState();
 }
@@ -81,7 +90,9 @@ class _AddMembersDialogState extends State<AddMembersDialog> {
                                 radius: 30,
                                 backgroundImage: AssetImage(imagePath),
                               ),
-                              SizedBox(width: 10,),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -129,11 +140,24 @@ class _AddMembersDialogState extends State<AddMembersDialog> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'Create',
-                    style: TextStyle(color: Colors.blue),
-                  ),
+                  onPressed: () {
+                    context.read<HomeBloc>().add(
+                          CreateGroupEvent(
+                              data: widget.chatModel,
+                              onEnd: () => Navigator.pop(context)),
+                        );
+                  },
+                  child: ValueListenableBuilder(
+                      valueListenable: isLoadingToCreate,
+                      builder: (context, _, __) {
+                        if (isLoadingToCreate.value) {
+                          return CircularProgressIndicator();
+                        } else
+                          return const Text(
+                            'Create',
+                            style: TextStyle(color: Colors.blue),
+                          );
+                      }),
                 ),
               ],
             ),

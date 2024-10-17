@@ -1,3 +1,4 @@
+import 'package:chat_web/src/core/extension/print_styles.dart';
 import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
 import 'package:hive/hive.dart';
 
@@ -31,21 +32,42 @@ class ChatModel {
   });
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
-    return ChatModel(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      chatType: json['chatType'] as String? ?? '',
-      participants: List<int>.from(json['participants'] as List<dynamic>) ?? [],
-      link: json['link'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      picture: json['picture'] as String? ?? '',
-      messages: json['messages'] != null
-          ? (json['messages'] as List<dynamic>)
-              .map((item) =>
-                  ChattingModel.fromJson(item as Map<String, dynamic>))
-              .toList()
-          : [],
-    );
+    try {
+      return ChatModel(
+        id: json['id'] as int? ?? 0,
+        name: json['name'] as String? ?? '',
+        chatType: json['chatType'] as String? ?? '',
+        participants:
+            List<int>.from(json['participants'] as List<dynamic>) ?? [],
+        link: json['link'] as String? ?? '',
+        description: json['description'] as String? ?? '',
+        picture: json['picture'] as String? ?? '',
+        messages: json['messages'] != null
+            ? (json['messages'] as List<dynamic>)
+                .map((item) =>
+                    ChattingModel.fromJson(item as Map<String, dynamic>))
+                .toList()
+            : [],
+      );
+    } catch (e, err) {
+      'ERROR ON FROM JCON CHAT $e $err'.printWarning();
+      return ChatModel(
+        id: json['id'] as int? ?? 0,
+        name: json['name'] as String? ?? '',
+        chatType: json['chatType'] as String? ?? '',
+        participants:
+            List<int>.from(json['participants'] as List<dynamic>) ?? [],
+        link: json['link'] as String? ?? '',
+        description: json['description'] as String? ?? '',
+        picture: json['picture'] as String? ?? '',
+        messages: json['messages'] != null
+            ? (json['messages'] as List<dynamic>)
+                .map((item) =>
+                    ChattingModel.fromJson(item as Map<String, dynamic>))
+                .toList()
+            : [],
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -6,6 +6,7 @@ import 'package:chat_web/src/features/auth/domain/usecase/create_user_usecase.da
 import 'package:chat_web/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_web/src/features/home/data/data_source/home_data_soure.dart';
 import 'package:chat_web/src/features/home/data/repository/home_repository.dart';
+import 'package:chat_web/src/features/home/domain/create_group_use_case.dart';
 import 'package:chat_web/src/features/home/domain/get_user_info_usecase.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:dio/dio.dart';
@@ -37,6 +38,11 @@ Future<void> initialSource() async {
         ),
         BlocProvider(
           create: (context) => HomeBloc(
+            createGroupUseCase: CreateGroupUseCase(
+              repository: HomeRepositoryImpl(
+                dataSoure: HomeDataSourceImpl(dio: dio),
+              ),
+            ),
             getUserInfoUsecase: GetUserInfoUsecase(
               repository: HomeRepositoryImpl(
                 dataSoure: HomeDataSourceImpl(dio: dio),

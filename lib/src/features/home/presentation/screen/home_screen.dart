@@ -113,7 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Scaffold(
           key: _scafoldKey,
-          drawer: CustomDrawer(),
+          drawer: CustomDrawer(
+            userModel: context.watch<HomeBloc>().state.userModel,
+          ),
           body: Row(
             children: [
               Container(
@@ -123,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     ChatUsersWidget(
-                      chats: context.watch<HomeBloc>().state.userModel!.chats,
+                      chats: context.watch<HomeBloc>().state.chats,
                       globalContext: context,
                       scafoldKey: _scafoldKey,
                     ),
