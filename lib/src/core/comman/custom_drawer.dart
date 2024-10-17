@@ -1,3 +1,4 @@
+import 'package:chat_web/src/features/home/presentation/widget/add_members.dart';
 import 'package:chat_web/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -80,11 +81,9 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SettingsScreen(),
-                ),
+              showDialog(
+                context: context,
+                builder: (context) => const SettingsScreen(),
               );
             },
           ),
@@ -100,13 +99,156 @@ class CustomDrawer extends StatelessWidget {
       ),
     );
   }
+void _showNewGroupDialog(BuildContext context) {
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController controller = TextEditingController();
+  bool _isGroupNameValid = true;
 
-  void _showNewGroupDialog(BuildContext context) {
-    final FocusNode focusNode = FocusNode();
-    final TextEditingController controller = TextEditingController();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    focusNode.requestFocus();
+  });
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Stack(
+              children: [
+                Container(
+                  width: 350,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.blue,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              onPressed: () {},
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Group name',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: _isGroupNameValid
+                                        ? Colors.blue
+                                        : Colors.red, 
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextField(
+                                  focusNode: focusNode,
+                                  controller: controller,
+                                  decoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: _isGroupNameValid
+                                              ? Colors.blue
+                                              : Colors.red), 
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: _isGroupNameValid
+                                              ? Colors.blue
+                                              : Colors.red), 
+                                    ),
+                                    contentPadding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    isDense: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              if (controller.text.isEmpty) {
+                                setState(() {
+                                  _isGroupNameValid = false; 
+                                });
+                              } else {
+                                setState(() {
+                                  _isGroupNameValid = true; 
+                                });
+                                Navigator.of(context).pop(); 
+
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AddMembersDialog(); 
+                                  },
+                                );
+                              }
+                            },
+                            child: const Text(
+                              'Next',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+  void _showNewChannelDialog(BuildContext context) {
+    final FocusNode nameFocusNode = FocusNode();
+    final FocusNode descriptionFocusNode = FocusNode();
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      focusNode.requestFocus();
+      nameFocusNode.requestFocus();
     });
 
     showDialog(
@@ -143,19 +285,12 @@ class CustomDrawer extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Group name',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
                               TextField(
-                                focusNode: focusNode,
-                                controller: controller,
+                                focusNode: nameFocusNode,
+                                controller: nameController,
                                 decoration: InputDecoration(
+                                  hintText: 'Channel name',
+                                  hintStyle: TextStyle(color: Colors.grey),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.blue),
                                   ),
@@ -167,11 +302,33 @@ class CustomDrawer extends StatelessWidget {
                                   ),
                                   isDense: true,
                                 ),
+                                onTap: () {
+                                  nameFocusNode.requestFocus();
+                                },
                               ),
                             ],
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      focusNode: descriptionFocusNode,
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        hintText: 'Description (optional)',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                        ),
+                        isDense: true,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -189,7 +346,7 @@ class CustomDrawer extends StatelessWidget {
                         TextButton(
                           onPressed: () {},
                           child: const Text(
-                            'Next',
+                            'Create',
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
@@ -212,133 +369,4 @@ class CustomDrawer extends StatelessWidget {
       },
     );
   }
-}
-
-void _showNewChannelDialog(BuildContext context) {
-  final FocusNode nameFocusNode = FocusNode();
-  final FocusNode descriptionFocusNode = FocusNode();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    nameFocusNode.requestFocus();
-  });
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Stack(
-          children: [
-            Container(
-              width: 350,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.blue,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextField(
-                              focusNode: nameFocusNode,
-                              controller: nameController,
-                              decoration: InputDecoration(
-                                hintText: 'Channel name',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                isDense: true,
-                              ),
-                              onTap: () {
-                                nameFocusNode.requestFocus();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    focusNode: descriptionFocusNode,
-                    controller: descriptionController,
-                    decoration: InputDecoration(
-                      hintText: 'Description (optional)',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                      ),
-                      isDense: true,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Create',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {},
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
 }
