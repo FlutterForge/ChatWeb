@@ -80,11 +80,9 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => SettingsScreen(),
-                ),
+              showDialog(
+                context: context,
+                builder: (context) => const SettingsScreen(), 
               );
             },
           ),
@@ -100,6 +98,7 @@ class CustomDrawer extends StatelessWidget {
       ),
     );
   }
+
 
   void _showNewGroupDialog(BuildContext context) {
     final FocusNode focusNode = FocusNode();
