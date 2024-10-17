@@ -137,7 +137,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       value: interfaceScale,
                       min: 50, 
                       max: 300, 
-                      divisions: 25, 
                       activeColor: Colors.blue,
                       onChanged: isScaleEnabled
                           ? (double newValue) {
