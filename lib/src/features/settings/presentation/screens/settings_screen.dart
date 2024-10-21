@@ -1,10 +1,11 @@
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
+import 'package:chat_web/src/features/auth/data/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
-
+  const SettingsScreen({super.key, required this.userModel});
+  final UserModel? userModel;
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -15,6 +16,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+  List<Color> avaeterBg = [
+    Colors.blue,
+    Colors.green,
+    Colors.red,
+    Colors.yellow,
+    Colors.purple,
+    Colors.pink
+  ];
     return Dialog(
       backgroundColor: AppColors.instance.white,
       shape: RoundedRectangleBorder(
@@ -62,27 +71,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/images/jamol.png'),
+                  CircleAvatar(
+                  radius: 30,
+                  backgroundColor: (avaeterBg..shuffle()).first,
+                  child: Text(
+                    widget.userModel?.username.substring(0, 1) ?? '',
+                    style: TextStyle(fontSize: 24, color: Colors.black),
                   ),
+                ),
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Jamol Bro",
+                       Text(
+                        widget.userModel?.username ?? '',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        "+998 94 222 29 75",
+                       Text(
+                        widget.userModel?.phoneNumber ?? '',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        "@JamolBro",
+                       Text(
+                        "@${widget.userModel?.username.replaceAll(' ', '') ?? ''}",
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     ],

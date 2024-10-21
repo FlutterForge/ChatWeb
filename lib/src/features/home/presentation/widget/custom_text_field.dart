@@ -1,8 +1,14 @@
 import 'dart:typed_data';
+import 'package:chat_web/src/core/utils/initiat_source.dart';
+import 'package:chat_web/src/core/utils/local_db_service.dart';
+import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
+import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
+import 'package:chat_web/src/features/home/presentation/bloc/home_event.dart';
 import 'package:chat_web/src/features/home/presentation/widget/selected_file_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
@@ -10,16 +16,35 @@ import 'package:chat_web/src/core/constants/vectors/app_vectors.dart';
 import 'package:flutter/foundation.dart' as foundation;
 
 class CustomTextField extends StatefulWidget {
-  final TextEditingController controller;
+  const CustomTextField({super.key, required this.index});
 
-  const CustomTextField({super.key, required this.controller});
+  final int index;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  List<Uint8List?> selectedFiles = []; 
+  List<Uint8List?> selectedFiles = [];
+
+  final TextEditingController controller = TextEditingController();
+
+  late final int uid;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    LocalDbService.instance.readData(key: 'uid').then((value) {
+      uid = int.tryParse(value!) ?? 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +57,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           IconButton(
             onPressed: () async {
               final result = await FilePicker.platform.pickFiles(
-                allowMultiple: true, 
-                type: FileType.any, 
+                allowMultiple: true,
+                type: FileType.any,
               );
               if (result != null && result.files.isNotEmpty) {
                 selectedFiles.clear();
@@ -51,18 +76,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 );
               }
             },
-            icon: SvgPicture.asset( AppVectors.instance.attachFile
-                ),
+            icon: SvgPicture.asset(AppVectors.instance.attachFile),
           ),
-
           Expanded(
             child: CupertinoTextField(
               placeholder: 'Message',
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              controller: widget.controller,
+              controller: controller,
               onChanged: (value) {
-                if (widget.controller.text.length == 1 ||
-                    widget.controller.text.isEmpty) {
+                if (controller.text.length == 1 || controller.text.isEmpty) {
                   setState(() {});
                 }
               },
@@ -84,9 +106,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         child: EmojiPicker(
                           onEmojiSelected: (category, emoji) {
                             setState(() {
-                              widget.controller.text += emoji.emoji; 
-                              widget.controller.selection = TextSelection.fromPosition(
-                                TextPosition(offset: widget.controller.text.length), 
+                              controller.text += emoji.emoji;
+                              controller.selection = TextSelection.fromPosition(
+                                TextPosition(offset: controller.text.length),
                               );
                             });
                           },
@@ -111,15 +133,27 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     );
                   });
             },
-            icon: SvgPicture.asset(AppVectors.instance.stickers), 
+            icon: SvgPicture.asset(AppVectors.instance.stickers),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 205),
             child: IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset(widget.controller.text.isEmpty
-                ? AppVectors.instance.microphone
-                : AppVectors.instance.send),
+              onPressed: () {
+                BlocProvider.of<HomeBloc>(context, listen: false).add(
+                  SendMesasgeEvent(
+                    index: widget.index,
+                    data: MessageModel(
+                      id: UniqueKey().toString(),
+                      sender: uid,
+                      message: controller.text,
+                      dateTime: DateTime.now().toString(),
+                    ),
+                  ),
+                );
+              },
+              icon: SvgPicture.asset(controller.text.isEmpty
+                  ? AppVectors.instance.microphone
+                  : AppVectors.instance.send),
             ),
           ),
         ],

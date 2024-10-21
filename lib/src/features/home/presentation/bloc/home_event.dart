@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
+import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class HomeEvent extends Equatable {
@@ -26,7 +27,14 @@ class CreateGroupEvent extends HomeEvent {
   List<Object?> get props => [data];
 }
 
+class GetAllChatsEvent extends HomeEvent {}
 
-class GetAllChatsEvent extends HomeEvent{
-  
+class SendMesasgeEvent extends HomeEvent {
+  final int index;
+  final MessageModel data;
+
+  SendMesasgeEvent({required this.index, required this.data});
+
+  @override
+  List<Object?> get props => [index, data];
 }

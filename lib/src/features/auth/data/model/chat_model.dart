@@ -18,7 +18,7 @@ class ChatModel {
 
   final String? picture;
 
-  List<ChattingModel> messages;
+  List<MessageModel> messages;
 
   ChatModel({
     required this.id,
@@ -45,7 +45,7 @@ class ChatModel {
         messages: json['messages'] != null
             ? (json['messages'] as List<dynamic>)
                 .map((item) =>
-                    ChattingModel.fromJson(item as Map<String, dynamic>))
+                    MessageModel.fromJson(item as Map<String, dynamic>))
                 .toList()
             : [],
       );
@@ -63,7 +63,7 @@ class ChatModel {
         messages: json['messages'] != null
             ? (json['messages'] as List<dynamic>)
                 .map((item) =>
-                    ChattingModel.fromJson(item as Map<String, dynamic>))
+                    MessageModel.fromJson(item as Map<String, dynamic>))
                 .toList()
             : [],
       );

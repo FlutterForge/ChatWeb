@@ -1,9 +1,14 @@
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/extension/print_styles.dart';
+import 'package:chat_web/src/core/utils/initiat_source.dart';
 import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
+import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
+import 'package:chat_web/src/features/home/presentation/bloc/home_event.dart';
 import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart';
+import 'package:chat_web/src/features/home/presentation/widget/right_side_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatUsersWidget extends StatefulWidget {
   final List<ChatModel>? chats;
@@ -55,7 +60,12 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
                     Offset position = itemBox.localToGlobal(Offset.zero);
                     showContextMenu(context, position);
                   },
-                  onTap: () {},
+                  onTap: () {
+                    context.read<HomeBloc>().add(GetAllChatsEvent());
+                    pickedChat.value = widget.chats![index];
+                    pickedChatIndex = index;
+                    print('after changing $pickedChatIndex');
+                  },
                   child: Container(
                     padding: const EdgeInsets.only(bottom: 7, top: 7),
                     decoration: BoxDecoration(
@@ -71,8 +81,9 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
                       title: Text(
                         widget.chats![index].name,
                       ),
-                      subtitle:
-                          Text(widget.chats![index].messages.last.message),
+                      subtitle: widget.chats![index].messages.isNotEmpty
+                          ? Text(widget.chats![index].messages.last.message)
+                          : null,
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

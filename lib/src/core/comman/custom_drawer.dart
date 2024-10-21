@@ -11,6 +11,14 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Color> avaeterBg = [
+      Colors.blue,
+      Colors.green,
+      Colors.red,
+      Colors.yellow,
+      Colors.purple,
+      Colors.pink
+    ];
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -24,10 +32,10 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.white,
+                  backgroundColor: (avaeterBg..shuffle()).first,
                   child: Text(
                     userModel?.username.substring(0, 1) ?? '',
-                    style: TextStyle(fontSize: 24, color: Colors.blue),
+                    style: TextStyle(fontSize: 24, color: Colors.black),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -87,7 +95,9 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               showDialog(
                 context: context,
-                builder: (context) => const SettingsScreen(),
+                builder: (context) => SettingsScreen(
+                  userModel: userModel,
+                ),
               );
             },
           ),
@@ -219,7 +229,7 @@ class CustomDrawer extends StatelessWidget {
                                           id: 0,
                                           name: controller.text,
                                           chatType: 'group',
-                                          participants: [0,1,2,4],
+                                          participants: [0, 1, 2, 4],
                                           link:
                                               'https://t.me/${controller.text}',
                                           messages: [],

@@ -1,9 +1,20 @@
+import 'package:chat_web/src/features/auth/data/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key, required this.userModel}) : super(key: key);
+  final UserModel? userModel;
   @override
   Widget build(BuildContext context) {
+    List<Color> avaeterBg = [
+      Colors.blue,
+      Colors.green,
+      Colors.red,
+      Colors.orange,
+      Colors.purple,
+      Colors.pink,
+    ];
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -25,12 +36,16 @@ class ProfilePage extends StatelessWidget {
           Column(
             children: [
               CircleAvatar(
-                radius: 40,
-                backgroundImage: AssetImage('assets/images/jamol.png'),
-              ),
+                  radius: 30,
+                  backgroundColor: (avaeterBg..shuffle()).first,
+                  child: Text(
+                    userModel?.username.substring(0, 1) ?? '',
+                    style: TextStyle(fontSize: 24, color: Colors.black),
+                  ),
+                ),
               SizedBox(height: 10),
               Text(
-                'Jamol Kholmirzaev',
+                userModel?.username ?? '',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               Text('last seen today at 12:01 PM',
@@ -45,7 +60,7 @@ class ProfilePage extends StatelessWidget {
               Icons.info_outline,
               color: Colors.black,
             ),
-            title: Text('+998 94 222 29 75'),
+            title: Text(userModel?.phoneNumber ?? '',),
             subtitle: Text('Mobile'),
           ),
           ListTile(
@@ -55,7 +70,7 @@ class ProfilePage extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              '@JamolBro',
+              '@${userModel?.username.replaceAll(' ', '') ?? ''}',
               style: TextStyle(color: Colors.blue),
             ),
             subtitle: Text('Username'),

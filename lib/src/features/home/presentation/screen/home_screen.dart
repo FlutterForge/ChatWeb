@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       (value) {
         BlocProvider.of<HomeBloc>(context)
             .add(GetUserInfoEvent(id: value ?? ''));
+        BlocProvider.of<HomeBloc>(context).add(GetAllChatsEvent());
       },
     );
   }
@@ -86,7 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
               CupertinoPageRoute(builder: (_) => HelloScreen()), (_) => false);
         });
 
-        if (_pressedKeys.contains(LogicalKeyboardKey.space)) {
+        if (_pressedKeys.contains(LogicalKeyboardKey.controlLeft) &&
+            _pressedKeys.contains(LogicalKeyboardKey.shiftLeft)) {
           if (isShowUserInfo) {
             setState(() {
               isShowUserInfo = false;
@@ -178,20 +180,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: RightSideBar(
-                  model: context
-                          .watch<HomeBloc>()
-                          .state
-                          .userModel!
-                          .chats
-                          .isNotEmpty
-                      ? context.watch<HomeBloc>().state.userModel!.chats[0]
-                      : null,
                   controller: _chattingController,
                 ),
               ),
               Visibility(
                   visible: isShowUserInfo,
-                  child: SizedBox(width: 300, child: ProfilePage())),
+                  child: SizedBox(
+                      width: 300,
+                      child: ProfilePage(
+                        userModel: context.watch<HomeBloc>().state.userModel,
+                      ))),
             ],
           ),
         ),

@@ -21,6 +21,7 @@ class HomeState extends Equatable {
         userModel,
         status,
         chats,
+        
       ];
 }
 

@@ -22,7 +22,8 @@ class AuthDataSourceImpl extends AuthDataSource {
         data: model.toJson(),
       );
 
-      print("Response: ${response.statusCode}, ${response.statusMessage}, ${response.data}");
+      print(
+          "Response: ${response.statusCode}, ${response.statusMessage}, ${response.data}");
       if (response.statusCode == 200) {
         print(jsonDecode(response.data));
         final UserModel result = UserModel.fromJson(jsonDecode(response.data));
