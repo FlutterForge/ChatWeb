@@ -21,7 +21,6 @@ class ChatUsersWidget extends StatefulWidget {
   });
 
   final GlobalKey<ScaffoldState> scafoldKey;
-
   final BuildContext globalContext;
 
   @override
@@ -32,6 +31,8 @@ Color bg = AppColors.instance.white;
 int? _hoveredIndex;
 
 class _ChatUsersWidgetState extends State<ChatUsersWidget> {
+  TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     'STATE CHATS LENGTH ${widget.chats!.length}'.printWarning();
@@ -113,26 +114,66 @@ class _ChatUsersWidgetState extends State<ChatUsersWidget> {
         Positioned(
             child: Container(
           color: AppColors.instance.blue,
-          child: ListTile(
-            title: Text(
-              'Chats',
-              style: TextStyle(color: AppColors.instance.white),
-            ),
-            leading: IconButton(
-              onPressed: () {
-                widget.scafoldKey.currentState!.openDrawer();
-              },
-              icon: Icon(
-                Icons.menu,
-                color: AppColors.instance.white,
-              ),
-            ),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                CupertinoIcons.search,
-                color: AppColors.instance.white,
-              ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    widget.scafoldKey.currentState!.openDrawer();
+                  },
+                  icon: Icon(
+                    Icons.menu,
+                    color: AppColors.instance.white,
+                  ),
+                ),
+                Text(
+                  'Chats',
+                  style:
+                      TextStyle(color: AppColors.instance.white, fontSize: 18),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    height: 30,
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search, 
+                          color: Colors.white70,
+                        ),
+                        hintText: 'Search...',
+                        hintStyle: TextStyle(
+                            color: Colors.white70, fontSize: 15),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 1.0,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                            color: Colors.white70,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                            color: AppColors.instance.white,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(color: AppColors.instance.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ))
