@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
-import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
+import 'package:chat_web/src/core/model/message_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class HomeEvent extends Equatable {

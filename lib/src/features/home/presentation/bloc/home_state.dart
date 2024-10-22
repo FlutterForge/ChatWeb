@@ -1,5 +1,5 @@
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
-import 'package:chat_web/src/features/auth/data/model/user_model.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
+import 'package:chat_web/src/core/model/user_model.dart';
 import 'package:equatable/equatable.dart';
 
 class HomeState extends Equatable {

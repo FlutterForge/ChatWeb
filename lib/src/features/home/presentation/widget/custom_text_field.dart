@@ -1,7 +1,6 @@
 import 'dart:typed_data';
-import 'package:chat_web/src/core/utils/initiat_source.dart';
+import 'package:chat_web/src/core/model/message_model.dart';
 import 'package:chat_web/src/core/utils/local_db_service.dart';
-import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_event.dart';
 import 'package:chat_web/src/features/home/presentation/widget/selected_file_dialog.dart';
@@ -33,9 +32,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    LocalDbService.instance.readData(key: 'uid').then((value) {
+    HiveService.instance.readData(key: 'uid')!.then((value) {
       uid = int.tryParse(value!) ?? 0;
     });
   }
@@ -116,11 +114,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                             height: 256,
                             checkPlatformCompatibility: true,
                             emojiViewConfig: EmojiViewConfig(
-                              emojiSizeMax: 28 *
-                                  (foundation.defaultTargetPlatform ==
-                                          TargetPlatform.iOS
-                                      ? 1.20
-                                      : 1.0),
+                              emojiSizeMax: 28 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.20 : 1.0),
                             ),
                             viewOrderConfig: const ViewOrderConfig(
                               top: EmojiPickerItem.categoryBar,
@@ -151,9 +145,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   ),
                 );
               },
-              icon: SvgPicture.asset(controller.text.isEmpty
-                  ? AppVectors.instance.microphone
-                  : AppVectors.instance.send),
+              icon: SvgPicture.asset(controller.text.isEmpty ? AppVectors.instance.microphone : AppVectors.instance.send),
             ),
           ),
         ],

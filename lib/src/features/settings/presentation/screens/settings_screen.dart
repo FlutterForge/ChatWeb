@@ -1,5 +1,5 @@
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
-import 'package:chat_web/src/features/auth/data/model/user_model.dart';
+import 'package:chat_web/src/core/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

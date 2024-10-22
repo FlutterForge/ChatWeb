@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:chat_web/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:chat_web/src/features/home/presentation/screen/home_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:rive/rive.dart';
 
@@ -34,7 +38,7 @@ class _OtpScreenState extends State<OtpScreen> {
     super.initState();
     Timer(
       const Duration(milliseconds: 1500),
-      () => showNotification(message:  """🔑 *Your Confirmation Code*:
+      () => showNotification(message: """🔑 *Your Confirmation Code*:
 
 `$code`
 
@@ -54,93 +58,97 @@ Please enter this code to verify your account."""),
           style: context.textTheme.titleLarge,
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '+${widget.phoneNumber}',
-              style: context.textTheme.headlineLarge,
-            ),
-            Text(
-              'We have sent you and SMS with the code',
-              style: context.textTheme.headlineSmall,
-            ),
-            SizedBox(
-              height: 400,
-              width: 350,
-              child: RiveAnimation.asset(
-                fit: BoxFit.contain,
-                animations: animations,
-                AppVectors.instance.authTeddy,
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state.status == AuthStatus.authorized) {
+            Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => HomeScreen()), (_) => false);
+          } else if (state.status == AuthStatus.unauthorized) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(builder: (context) => CreateUserScreen(phoneNumber: widget.phoneNumber)),
+              (_) => false,
+            );
+          } else if (state.status == AuthStatus.failure) {
+            showNotification(message: "Failed to create telegram account");
+          }
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '+${widget.phoneNumber}',
+                style: context.textTheme.headlineLarge,
               ),
-            ),
-            Form(
-              key: _globalKey,
-              child: Pinput(
-                autofocus: true,
-                validator: (value) {
-                  if (value == code.toString()) {
-                    return null;
-                  } else {
-                    return 'Invalid OTP';
-                  }
-                },
-                length: 5,
-                controller: _codeController,
-                onChanged: (value) {
-                  setState(() {
-                    animations = [
-                      TeddyAnimation.hands_up_un_show.name
-                    ];
-                  });
-                },
-                onCompleted: (value) {
-                  if (_globalKey.currentState!.validate()) {
-                    animations = [
-                      TeddyAnimation.hands_down.name,
-                      TeddyAnimation.success.name,
-                    ];
-                    Timer(
-                      const Duration(milliseconds: 1500),
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CreateUserScreen(
-                              phoneNumber: widget.phoneNumber,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  } else {
+              Text(
+                'We have sent you and SMS with the code',
+                style: context.textTheme.headlineSmall,
+              ),
+              SizedBox(
+                height: 400,
+                width: 350,
+                child: RiveAnimation.asset(
+                  fit: BoxFit.contain,
+                  animations: animations,
+                  AppVectors.instance.authTeddy,
+                ),
+              ),
+              Form(
+                key: _globalKey,
+                child: Pinput(
+                  autofocus: true,
+                  validator: (value) {
+                    if (value == code.toString()) {
+                      return null;
+                    } else {
+                      return 'Invalid OTP';
+                    }
+                  },
+                  length: 5,
+                  controller: _codeController,
+                  onChanged: (value) {
                     setState(() {
                       animations = [
-                        TeddyAnimation.hands_down.name,
-                        TeddyAnimation.fail.name,
+                        TeddyAnimation.hands_up_un_show.name
                       ];
                     });
-                  }
+                  },
+                  onCompleted: (value) {
+                    if (_globalKey.currentState!.validate()) {
+                      animations = [
+                        TeddyAnimation.hands_down.name,
+                        TeddyAnimation.success.name,
+                      ];
+
+                      BlocProvider.of<AuthBloc>(context).add(CreateUserEvent(username: '', phoneNumber: widget.phoneNumber));
+                    } else {
+                      setState(() {
+                        animations = [
+                          TeddyAnimation.hands_down.name,
+                          TeddyAnimation.fail.name,
+                        ];
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 40),
+              TextButton(
+                onPressed: () {
+                  code = Random().nextInt(89999) + 10000;
+                  showNotification(message: """🔑 *Your Confirmation Code*:
+      
+      `$code`
+      
+      Please enter this code to verify your account.""");
                 },
+                child: Text(
+                  'Resend SMS code',
+                  style: context.textTheme.titleMedium!.copyWith(color: AppColors.instance.blue),
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            TextButton(
-              onPressed: () {
-                code = Random().nextInt(89999) + 10000;
-                showNotification(message:  """🔑 *Your Confirmation Code*:
-
-`$code`
-
-Please enter this code to verify your account.""");
-              },
-              child: Text(
-                'Resend SMS code',
-                style: context.textTheme.titleMedium!.copyWith(color: AppColors.instance.blue),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

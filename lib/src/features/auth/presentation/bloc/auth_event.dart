@@ -19,3 +19,9 @@ class CreateUserEvent extends AuthEvent {
         phoneNumber
       ];
 }
+
+class AddUsertoDb extends AuthEvent {
+  final UserModel userModel;
+
+  AddUsertoDb({required this.userModel});
+}

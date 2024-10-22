@@ -254,8 +254,8 @@ class _FileDialogState extends State<FileDialog> {
         ),
         TextButton(
           onPressed: () {
-            String caption = captionController.text;
-            bool shouldCompress = compressImage;
+            // String caption = captionController.text;
+            // bool shouldCompress = compressImage;
 
             Navigator.pop(context);
           },

@@ -8,9 +8,9 @@ void main(List<String> args) async {
 }
 
 class ChatWeb extends StatelessWidget {
-  final String? uid;
+  final List<String> accounts;
 
-  const ChatWeb({super.key, this.uid});
+  const ChatWeb({super.key, required this.accounts});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ChatWeb extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Telegram',
       theme: ThemeData.light(),
-      home: uid == null ? HelloScreen() : HomeScreen(),
+      home: (accounts.isNotEmpty)? HomeScreen(): HelloScreen(),
     );
   }
 }

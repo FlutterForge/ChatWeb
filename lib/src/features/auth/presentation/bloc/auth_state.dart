@@ -1,31 +1,20 @@
 part of 'auth_bloc.dart';
 
 class AuthState extends Equatable {
-  final AuthStatus? status;
-  final String? number;
+  final AuthStatus status;
 
-  const AuthState({this.status, this.number});
-
-  AuthState copyWith({
-    AuthStatus? status,
-    String? number,
-  }) {
-    return AuthState(
-      status: status ?? this.status,
-      number: number ?? this.number,
-    );
-  }
+  const AuthState({required this.status});
 
   @override
   List<Object?> get props => [
-    status,
-    number,
-  ];
+        status,
+      ];
 }
 
 enum AuthStatus {
   initial,
+  loading,
   failure,
-  success,
-  loading
+  authorized,
+  unauthorized,
 }

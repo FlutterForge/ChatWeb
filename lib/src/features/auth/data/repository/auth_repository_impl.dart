@@ -1,7 +1,11 @@
 import 'package:chat_web/src/core/either/either.dart';
+import 'package:chat_web/src/core/model/user_model.dart';
 import 'package:chat_web/src/features/auth/data/data_source/auth_data_source.dart';
-import 'package:chat_web/src/features/auth/data/model/user_model.dart';
-import 'package:chat_web/src/features/auth/domain/repository/auth_repository.dart';
+
+abstract class AuthRepository {
+  Future<Either<String, List>> createUser(UserModel model);
+}
+
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthDataSource _dataSource;
@@ -9,7 +13,7 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl({required AuthDataSource dataSource}) : _dataSource = dataSource;
 
   @override
-  Future<Either<String, int>> createUser(UserModel model) async {
+  Future<Either<String, List>> createUser(UserModel model) async {
     try {
       final result = await _dataSource.createUser(model);
       return Right(result);

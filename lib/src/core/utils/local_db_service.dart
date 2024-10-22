@@ -1,28 +1,46 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:chat_web/src/core/model/user_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class LocalDbService {
-  final FlutterSecureStorage storage = FlutterSecureStorage();
+class HiveService {
+  static late Box box;
+  static const chatBox = 'chat_box';
 
-  LocalDbService.init();
-  static LocalDbService get instance => _instance;
-  static final LocalDbService _instance = LocalDbService.init();
+  //! Singleton
+  HiveService.init();
+  static HiveService get instance => _instance;
+  static final HiveService _instance = HiveService.init();
 
-  //! Write value
-  void writeData({required String key, required String value}) async {
-    await storage.write(key: key, value: value);
-    print("wrote $value");
+  //! init
+  Future<void> createBox() async {
+    box = await Hive.openBox(chatBox);
+    if (!Hive.isAdapterRegistered(3)) {
+      Hive.registerAdapter(UserModelAdapter());
+    }
   }
 
-  //! Read value
-  Future<String?> readData({required key}) async {
-      String? value = await storage.read(key: key);
-      print("red ${await storage.read(key: key)}");
-      return value;
+  //! write
+  Future<void> writeData({required key, required value}) async {
+    await box.put(key, value);
+    print('write ${[
+      key,
+      value
+    ]}');
   }
 
-  //! Delete value
-  void deleteData({required String key}) async {
-    await storage.delete(key: key);
-    print("deleted $key");
+  //! read
+  Future<dynamic>? readData({required key}) {
+    print(box.get(key));
+    return box.get(key, defaultValue: null);
+  }
+
+  //! read all
+  Map get readAllData {
+    return box.toMap();
+  }
+
+  //! delete
+  void deleteData({required key}) {
+    box.delete(key);
+    print('Deleted $key');
   }
 }

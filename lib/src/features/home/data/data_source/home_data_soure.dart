@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:chat_web/src/core/extension/print_styles.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
+import 'package:chat_web/src/core/model/message_model.dart';
+import 'package:chat_web/src/core/model/user_model.dart';
 import 'package:chat_web/src/core/utils/base_url.dart';
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
-import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
-import 'package:chat_web/src/features/auth/data/model/user_model.dart';
 import 'package:dio/dio.dart';
 
 abstract class HomeDataSoure {
@@ -80,18 +78,11 @@ class HomeDataSourceImpl extends HomeDataSoure {
         "http://$baseUrl:8000/chats",
       );
 
-      '>>>> RESPONSE DATA ${response.statusCode} ${json.decode(response.data)['data']}'
-          .printWarning();
-
       if (response.statusCode == 200) {
-        print(
-            'SUCCESS GET CHAT ALL CHATS ${json.decode(response.data)['data']}');
         List<ChatModel> data =
             (json.decode(response.data)['data'] as List<dynamic>)
                 .map((e) => ChatModel.fromJson(e))
                 .toList();
-
-        'AFTER FROM JSON'.printWarning();
         return data;
       } else {
         print('ERROR ON GETTING CHATS ${response.statusMessage}');
@@ -110,7 +101,6 @@ class HomeDataSourceImpl extends HomeDataSoure {
           .post('http://localhost:8000/chats/$id/message', data: model.toJson())
           .then((response) {
         if (response.statusCode == 200) {
-          '${response.statusMessage}'.printNormal();
         } else {
           throw Exception(response.statusMessage);
         }

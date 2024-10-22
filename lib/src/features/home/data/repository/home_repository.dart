@@ -1,7 +1,7 @@
 import 'package:chat_web/src/core/either/either.dart';
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
-import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
-import 'package:chat_web/src/features/auth/data/model/user_model.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
+import 'package:chat_web/src/core/model/message_model.dart';
+import 'package:chat_web/src/core/model/user_model.dart';
 import 'package:chat_web/src/features/home/data/data_source/home_data_soure.dart';
 
 abstract class HomeRepository {

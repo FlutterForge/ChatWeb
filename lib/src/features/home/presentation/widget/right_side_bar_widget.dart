@@ -1,9 +1,7 @@
 import 'package:chat_web/src/core/extension/context_text_theme.dart';
 import 'package:chat_web/src/core/extension/size_extenstion.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
 import 'package:chat_web/src/core/utils/local_db_service.dart';
-import 'package:chat_web/src/core/utils/save_last_seen.dart';
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
-import 'package:chat_web/src/features/auth/data/model/chatting_model.dart';
 import 'package:chat_web/src/features/home/presentation/widget/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +21,6 @@ class RightSideBar extends StatefulWidget {
 }
 
 class _RightSideBarState extends State<RightSideBar> {
-  final UserStatusService _userStatusService = UserStatusService();
-
   bool _isOnline = true;
 
   String? _lastSeen;
@@ -34,11 +30,9 @@ class _RightSideBarState extends State<RightSideBar> {
   @override
   void initState() {
     super.initState();
-    LocalDbService.instance.readData(key: 'uid').then((value) {
+    HiveService.instance.readData(key: 'uid')!.then((value) {
       id = int.tryParse(value!);
     });
-    _isOnline = _userStatusService.getUserStatus();
-    _lastSeen = _userStatusService.getLastSeenTime();
   }
 
   void _toggleStatus() {
@@ -46,12 +40,9 @@ class _RightSideBarState extends State<RightSideBar> {
       _isOnline = !_isOnline;
       if (!_isOnline) {
         _lastSeen = TimeOfDay.now().format(context);
-        _userStatusService.saveLastSeenTime(_lastSeen!);
       } else {
         _lastSeen = null;
       }
-
-      _userStatusService.saveUserStatus(_isOnline);
     });
   }
 
@@ -159,67 +150,44 @@ class _RightSideBarState extends State<RightSideBar> {
                           color: AppColors.instance.blue,
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage(
-                                AppVectors.instance.backgroundPattern),
+                            image: AssetImage(AppVectors.instance.backgroundPattern),
                           ),
                         ),
                         child: ListView.separated(
                           reverse: false,
                           itemCount: pickedChat.value!.messages.length,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 20),
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          separatorBuilder: (context, index) => const SizedBox(height: 20),
                           itemBuilder: (context, index) => SizedBox(
                               width: double.infinity,
                               child: Align(
-                                alignment: id ==
-                                        pickedChat.value!.messages[index].sender
-                                    ? Alignment.centerRight
-                                    : Alignment.centerLeft,
+                                alignment: id == pickedChat.value!.messages[index].sender ? Alignment.centerRight : Alignment.centerLeft,
                                 child: Row(
-                                  mainAxisAlignment: id ==
-                                          pickedChat
-                                              .value!.messages[index].sender
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
+                                  mainAxisAlignment: id == pickedChat.value!.messages[index].sender ? MainAxisAlignment.end : MainAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    if (id !=
-                                        pickedChat
-                                            .value!.messages[index].sender)
+                                    if (id != pickedChat.value!.messages[index].sender)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 10),
+                                        padding: const EdgeInsets.only(right: 10),
                                         child: CircleAvatar(
-                                          backgroundImage: AssetImage(
-                                              'assets/images/person${(index + 1) % 35}.png'),
+                                          backgroundImage: AssetImage('assets/images/person${(index + 1) % 35}.png'),
                                         ),
                                       ),
                                     Container(
                                       padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
-                                        color: id ==
-                                                pickedChat.value!
-                                                    .messages[index].sender
-                                            ? AppColors.instance.green
-                                            : AppColors.instance.white,
+                                        color: id == pickedChat.value!.messages[index].sender ? AppColors.instance.green : AppColors.instance.white,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        pickedChat
-                                            .value!.messages[index].message,
+                                        pickedChat.value!.messages[index].message,
                                       ),
                                     ),
-                                    if (id ==
-                                        pickedChat
-                                            .value!.messages[index].sender)
+                                    if (id == pickedChat.value!.messages[index].sender)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
+                                        padding: const EdgeInsets.only(left: 10),
                                         child: CircleAvatar(
-                                          backgroundImage: AssetImage(
-                                              'assets/images/person${(index + 1) % 35}.png'),
+                                          backgroundImage: AssetImage('assets/images/person${(index + 1) % 35}.png'),
                                         ),
                                       ),
                                   ],
@@ -260,8 +228,7 @@ class _RightSideBarState extends State<RightSideBar> {
                     child: Center(
                       child: Text(
                         'Select a chat to Start Messaging',
-                        style: context.textTheme.titleMedium!
-                            .copyWith(color: AppColors.instance.white),
+                        style: context.textTheme.titleMedium!.copyWith(color: AppColors.instance.white),
                       ),
                     ),
                   ),

@@ -1,5 +1,4 @@
-import 'package:chat_web/src/core/utils/initiat_source.dart';
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_event.dart';
 import 'package:chat_web/src/features/home/presentation/widget/fake_user_base.dart';

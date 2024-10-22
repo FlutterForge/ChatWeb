@@ -39,10 +39,10 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state.status == AuthStatus.failure) {
-            showNotification(message: "Failed to create telegram account");
-          } else {
+          if (state.status == AuthStatus.authorized) {
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()), (_) => false);
+          } else {
+            showNotification(message: "Failed to create telegram account");
           }
         },
         child: Padding(

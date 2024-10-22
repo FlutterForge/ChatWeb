@@ -17,14 +17,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> initialSource() async {
-  String? uid;
-  await Future.wait([
-    Hive.initFlutter(),
-    Hive.openBox('userStatus'),
-    LocalDbService.instance.readData(key: 'uid').then((value) {
-      uid = value;
-    })
-  ]);
+  await Hive.initFlutter();
+
+  await HiveService.instance.createBox();
+  List<String> accounts =  await HiveService.instance.readData(key: 'accounts') ?? [];
+
   final Dio dio = Dio();
   runApp(
     MultiBlocProvider(
@@ -62,7 +59,7 @@ Future<void> initialSource() async {
           ),
         )
       ],
-      child: ChatWeb(uid: uid),
+      child: ChatWeb(accounts: accounts),
     ),
   );
 }

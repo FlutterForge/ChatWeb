@@ -1,11 +1,15 @@
-import 'package:chat_web/src/core/comman/custom_drawer.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:chat_web/src/core/common/custom_drawer.dart';
 import 'package:chat_web/src/core/constants/colors/app_colors.dart';
 import 'package:chat_web/src/core/extension/print_styles.dart';
 import 'package:chat_web/src/core/extension/size_extenstion.dart';
 import 'package:chat_web/src/core/utils/key_board_listen_function.dart';
 import 'package:chat_web/src/core/utils/local_db_service.dart';
 import 'package:chat_web/src/core/utils/show_notification.dart';
-import 'package:chat_web/src/features/auth/data/model/user_model.dart';
 import 'package:chat_web/src/features/auth/presentation/screen/hello_screen.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:chat_web/src/features/home/presentation/bloc/home_event.dart';
@@ -13,10 +17,6 @@ import 'package:chat_web/src/features/home/presentation/bloc/home_state.dart';
 import 'package:chat_web/src/features/home/presentation/widget/chat_user_widget.dart';
 import 'package:chat_web/src/features/home/presentation/widget/right_side_bar_widget.dart';
 import 'package:chat_web/src/features/home/presentation/widget/users_side_bar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,10 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    LocalDbService.instance.readData(key: 'uid').then(
+    HiveService.instance.readData(key: 'uid')!.then(
       (value) {
-        BlocProvider.of<HomeBloc>(context)
-            .add(GetUserInfoEvent(id: value ?? ''));
+        BlocProvider.of<HomeBloc>(context).add(GetUserInfoEvent(id: value ?? ''));
         BlocProvider.of<HomeBloc>(context).add(GetAllChatsEvent());
       },
     );
@@ -68,10 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
       onKeyEvent: (event) {
         if (event is KeyDownEvent) {
           _pressedKeys.add(event.logicalKey);
-          print('KEY DOWN EVENT');
         } else if (event is KeyUpEvent) {
           _pressedKeys.remove(event.logicalKey);
-          print('KEY UP EVENT');
         }
         onKeyEvent(event, _scafoldKey, _pressedKeys, () {
           if (_width > 300) {
@@ -82,13 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {});
           }
         }, () {
-          print('SHIFT TAP P BOSILDI');
-          Navigator.pushAndRemoveUntil(context,
-              CupertinoPageRoute(builder: (_) => HelloScreen()), (_) => false);
+          Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (_) => HelloScreen()), (_) => false);
         });
 
-        if (_pressedKeys.contains(LogicalKeyboardKey.controlLeft) &&
-            _pressedKeys.contains(LogicalKeyboardKey.shiftLeft)) {
+        if (_pressedKeys.contains(LogicalKeyboardKey.controlLeft) && _pressedKeys.contains(LogicalKeyboardKey.shiftLeft)) {
           if (isShowUserInfo) {
             setState(() {
               isShowUserInfo = false;
@@ -102,15 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: BlocListener<HomeBloc, HomeState>(
         listener: (context, state) {
-          '****************${context.watch<HomeBloc>().state.userModel!.chats}*******************'
-              .printError();
+          '****************${context.watch<HomeBloc>().state.userModel!.chats}*******************'.printError();
           if (state.status == HomeStatus.error) {
             showNotification(message: 'Internet connection error');
           }
           if (state.status == HomeStatus.success) {
             showNotification(message: 'User data came');
-            print(
-                '****************${context.watch<HomeBloc>().state.userModel!.chats}*******************');
+            print('****************${context.watch<HomeBloc>().state.userModel!.chats}*******************');
           }
         },
         child: Scaffold(
@@ -148,8 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {});
                         },
                         onPanUpdate: (details) {
-                          double delta = details.globalPosition.dx -
-                              _lastCursorPosition.dx;
+                          double delta = details.globalPosition.dx - _lastCursorPosition.dx;
 
                           double newWidth = _width + delta;
 
@@ -167,9 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: AnimatedContainer(
                           curve: Curves.linear,
                           duration: const Duration(milliseconds: 400),
-                          color: isToMakeSmall
-                              ? AppColors.instance.grey
-                              : Colors.transparent,
+                          color: isToMakeSmall ? AppColors.instance.grey : Colors.transparent,
                           height: double.infinity,
                           width: isToMakeSmall ? context.w * 0.005 : 1,
                         ),
@@ -199,8 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 void showContextMenu(BuildContext context, Offset position) async {
-  final RenderBox overLay =
-      Overlay.of(context).context.findRenderObject() as RenderBox;
+  final RenderBox overLay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
   await showMenu(
     shape: const RoundedRectangleBorder(
@@ -209,8 +197,7 @@ void showContextMenu(BuildContext context, Offset position) async {
     color: AppColors.instance.white,
     context: context,
     shadowColor: AppColors.instance.blue,
-    position: RelativeRect.fromLTRB(position.dx + 200, position.dy,
-        overLay.size.width - position.dx, overLay.size.height - position.dy),
+    position: RelativeRect.fromLTRB(position.dx + 200, position.dy, overLay.size.width - position.dx, overLay.size.height - position.dy),
     items: [
       const PopupMenuItem(
         value: 'delete',
@@ -218,8 +205,7 @@ void showContextMenu(BuildContext context, Offset position) async {
           children: [
             Icon(Icons.delete, color: Colors.red),
             SizedBox(width: 10),
-            Text("Delete",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text("Delete", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
       ),

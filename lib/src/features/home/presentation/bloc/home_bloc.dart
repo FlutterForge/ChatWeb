@@ -1,7 +1,6 @@
 import 'package:chat_web/src/core/extension/print_styles.dart';
+import 'package:chat_web/src/core/model/chat_model.dart';
 import 'package:chat_web/src/core/usecase/usecase.dart';
-import 'package:chat_web/src/features/auth/data/model/chat_model.dart';
-import 'package:chat_web/src/features/home/data/data_source/home_data_soure.dart';
 import 'package:chat_web/src/features/home/domain/create_group_use_case.dart';
 import 'package:chat_web/src/features/home/domain/get_all_chats_user_case.dart';
 import 'package:chat_web/src/features/home/domain/get_user_info_usecase.dart';
